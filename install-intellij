@@ -1,0 +1,15 @@
+#!/bin/bash
+source ./install.source.sh
+
+# https://intellij-support.jetbrains.com/hc/en-us/community/posts/207155515-Programmatically-download-latest-version
+
+function main {
+  local -r url='https://www.jetbrains.com/updates/updates.xml' 
+  local xmlfile=$(wget_to_temp "${url}")
+  
+  chmod 777 "${xmlfile}"
+  xmllint --xpath "string(//product/)" "${xmlfile}"
+
+}
+
+main

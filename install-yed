@@ -1,0 +1,10 @@
+#! /bin/bash
+source ./install.source.sh
+
+function main() {
+  local -r url="https://www.yworks.com/resources/yed/demo/yEd-3.17.zip" 
+  local -r name="yed"
+  download "$url" "$name" "java -jar ./yed.jar"
+}
+
+main "$@"

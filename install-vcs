@@ -1,0 +1,18 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+  apt-get update
+
+  install_from_manager "git-all"
+  install_from_manager "giggle"
+  # smartgit only for non-commercial use
+  # download "http://www.syntevo.com/static/smart/download/smartgit/smartgit-linux-17_0_4.tar.gz" "smartgit" "./bin/smartgit.sh" 
+
+  install_from_manager "subversion"
+  download "http://www.smartsvn.com/static/svn/download/smartsvn/smartsvn-linux-9_2_1.tar.gz" "smartsvn" "./bin/smartsvn.sh" 
+  
+  # add-apt-repository -y ppa:rabbitvcs/ppa
+}
+
+main "$@"

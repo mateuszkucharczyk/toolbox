@@ -1,0 +1,7 @@
+if [ $# -eq 0 ]; then
+	echo "User name not provided"
+	exit 1
+fi
+
+apt-get -y install virtualbox-guest-dkms
+adduser $1 vboxsf

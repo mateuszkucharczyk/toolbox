@@ -1,0 +1,5 @@
+#!/bin/bash
+source ./install.source.sh
+
+install_from_manager "xdotool"
+install_from_manager "keepass2"

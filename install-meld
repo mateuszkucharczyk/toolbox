@@ -1,0 +1,5 @@
+#!/bin/bash
+source ./install.source.sh
+
+#http://linuxpitstop.com/install-meld-on-ubuntu-and-mint-linux/
+install_from_manager "meld"

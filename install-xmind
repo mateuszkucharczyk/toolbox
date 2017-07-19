@@ -1,0 +1,35 @@
+#!/bin/bash
+
+source ./install.source.sh
+
+function main() {
+  local -r url="https://www.xmind.net/xmind/downloads/xmind-8-update2-linux.zip"
+  local -r name="xmind"
+  
+  
+  # ======== http://www.xmind.net/m/PuDC ======== 
+  # 1 Prepare files
+  #   1.1 Download from http://www.xmind.net/download/linux/
+  # 2 Extract
+  #   2.1 unzip xmind-8-linux.zip -d xmind
+  # 3 Move to /opt/
+  #   3.1 sudo mv xmind /opt/
+  if ! download "${url}" "${name}"  "./bin/xmind.sh" --create-dir ; then
+    echo "Failed to download and unpack <${url}> to $(get_install_dir)/name" >&2
+    exit 1
+  fi
+
+  
+  #4 Prepare directories
+  # 4.1 Allow writes to configuration directory
+  chmod a+w "$(get_install_dir)/${name}/configuration"
+  #5 Edit configuration file /opt/xmind/XMind_amd64/XMind.ini
+  # 5.1 Line2 change: ./configuration
+  #   5.1.1 /opt/xmind/Xmind_amd64/configuration
+  # 5.2 Line 4 change: ../workspace
+  #   5.2.1 /home/USERNAME/workspace
+  # 5.3 Line 6 & 8 change: ../plugins
+  #   5.3.1 ../plugins
+}
+
+main "$@"

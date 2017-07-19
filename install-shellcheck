@@ -1,0 +1,4 @@
+#!/bin/bash
+source ./install.source.sh
+
+install_from_manager "shellcheck"

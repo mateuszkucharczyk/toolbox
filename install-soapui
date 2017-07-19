@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source ./install.source.sh
+
+function main(){
+  local -r url="https://b537910400b7ceac4df0-22e92613740a7dd1247910134033c0d1.ssl.cf5.rackcdn.com/soapui/5.3.0/SoapUI-x64-5.3.0.sh"
+  download "url"
+  
+}

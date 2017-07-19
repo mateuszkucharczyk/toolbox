@@ -1,0 +1,13 @@
+#!/bin/bash
+source ./install.source.sh
+
+remove_old_installation "$(get_install_dir)/dropbox"
+
+#https://www.dropbox.com/install
+
+install_from_manager "python-gtk2-dev"
+wget -O "$(get_bin_dir)/dropbox.py" "https://www.dropbox.com/download?dl=packages/dropbox.py"
+chmod 555 "$(get_bin_dir)/dropbox.py"
+
+echo "python $(get_bin_dir)/dropbox.py \"\$@\"" > "$(get_bin_dir)/dropbox"
+chmod 555 "$(get_bin_dir)/dropbox"

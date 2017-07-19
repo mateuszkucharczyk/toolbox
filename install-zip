@@ -1,0 +1,6 @@
+#! /bin/bash
+
+source ./install.source.sh
+
+install_from_manager "zip"
+install_from_manager "unzip"

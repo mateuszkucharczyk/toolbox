@@ -1,0 +1,14 @@
+#! /bin/bash
+
+source ./install.source.sh
+
+function main {
+  local -r url="https://sourceforge.net/projects/squirrel-sql/files/1-stable/3.7.1-plainzip/squirrelsql-3.7.1-optional.zip"
+  local -r name="squirrelsql"
+  download "$url" "$name" "./squirrel-sql.sh"
+
+  # install ingres jdbc driver
+  wget -O "$(get_install_dir)/$name/iijdbc-10.0-4.0.6.jar"  'http://central.maven.org/maven2/com/ingres/jdbc/iijdbc/10.0-4.0.6/iijdbc-10.0-4.0.6.jar'
+}
+
+main "$@"
