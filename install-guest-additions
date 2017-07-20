@@ -1,7 +1,19 @@
-if [ $# -eq 0 ]; then
-	echo "User name not provided"
-	exit 1
-fi
+#!/bin/bash
 
-apt-get -y install virtualbox-guest-dkms
-adduser $1 vboxsf
+function main() {
+	local -r user="${1:?[ERROR] user not provided}"
+
+	apt-get update
+	sudo apt-get upgrade -y
+	apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils
+	
+	# virtualbox-guest-x11 required to make shared clipboard work properly
+	# replace libcheese-gtk23 with xserver-xorg-core because otherwise GUI apps does not open at all
+	apt-get remove -y libcheese-gtk23
+	apt-get install -y xserver-xorg-core
+	apt-get install -y virtualbox-guest-x11
+
+	adduser "${user}" vboxsf
+}
+
+main "$@"
