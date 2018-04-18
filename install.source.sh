@@ -41,8 +41,8 @@ function install_from_manager() {
 }
 
 function unpack_by_extension() {
-  local -r src="$1"
-  local -r dst="$2"
+  local -r src="${1:?[ERROR] source path not provided}";
+  local -r dst="${2:-$(dirname ${1})}";
 
   if [[ "${src}" =~ \.zip$ ]]; then
     echo "unzipping..."
@@ -83,13 +83,9 @@ function install_from_archive() {
 }
 
 function  download() {
-  if [ $# -ne 3 ]; then
-    echo "<url> and/or <name> and/or <executable> not provided"
-    exit 1
-  fi
-  local -r url="$1"
-  local -r name="$2"
-  local -r executable="$3"
+  local -r url="${1:?[ERROR] url not provided}"
+  local -r name="${2:?[ERROR] name not provided}"
+  local -r executable="${3:?[ERROR] executable not provided}"
   
   if [[ "$@" == *--create-dir* ]]; then
     local -r install_dir="$(get_install_dir)/${name}"

@@ -1,15 +1,16 @@
 #!/bin/bash
 source ./install.source.sh
 
-# https://intellij-support.jetbrains.com/hc/en-us/community/posts/207155515-Programmatically-download-latest-version
-
 function main {
-  local -r url='https://www.jetbrains.com/updates/updates.xml' 
-  local xmlfile=$(wget_to_temp "${url}")
+  local -r filter='.[] | select(.code | contains("TBA")) | .releases[0].downloads.linux.link';
+  local url;
+  url=$(wget -q -O - "https://data.services.jetbrains.com/products" | jq -r "${filter}");  
+  if [[ "$?" -ne 0 ]]; then
+    echo "[ERROR] Unable to determine toolbox download url." >&2;
+    exit 1;
+  fi
   
-  chmod 777 "${xmlfile}"
-  xmllint --xpath "string(//product/)" "${xmlfile}"
-
+  download "${url}" "jetbrains-toolbox" "jetbrains-toolbox";
 }
 
-main
+main "$@";
