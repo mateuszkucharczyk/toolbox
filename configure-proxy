@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function main() {
+  local -r proxy="${1:?[ERROR] proxy not provided}";
+  echo "# system proxy configuration" > ~/.profile;
+  echo "export http_proxy=\"${proxy}\";" >> ~/.profile;
+  echo 'export https_proxy="${http_proxy}";' >> ~/.profile;
+  echo 'export ftp_proxy="${http_proxy}";' >> ~/.profile;
+  echo 'export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com";' >> ~/.profile;
+  echo 'export HTTP_PROXY="${http_proxy}";' >> ~/.profile;
+  echo 'export HTTPS_PROXY="${https_proxy}";' >> ~/.profile;
+  echo 'export FTP_PROXY="${ftp_proxy}";' >> ~/.profile;
+  echo 'export NO_PROXY="${no_proxy}";' >> ~/.profile;
+  echo "" >> ~/.profile;
+}
+
+main "$@"
