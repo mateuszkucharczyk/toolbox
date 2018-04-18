@@ -74,7 +74,7 @@ function create_start_script() {
   local -r executable="${2?:[ERROR] name not provided}"
   local -r dst="$(get_install_dir)/${name}"
  
-  echo "cd ${dst}; ${executable:?} \"\$@\"" > "$(get_bin_dir)/${name}"
+  echo "cd ${dst}; ./${executable:?} \"\$@\"" > "$(get_bin_dir)/${name}"
   chmod 555 "$(get_bin_dir)/${name}"
 }
 
