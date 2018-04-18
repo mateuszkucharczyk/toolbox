@@ -6,7 +6,7 @@ function main() {
 
   install_from_manager "git-all"
   
-  git config --global "${http_proxy}";
+  git config --global http.proxy "${http_proxy}";
   
   # install_from_manager "giggle"
   # smartgit only for non-commercial use
