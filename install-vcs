@@ -2,8 +2,7 @@
 source ./install.source.sh
 
 function main() {
-  apt-get update
-
+  install_from_manager "git-daemon-sysvinit"
   install_from_manager "git-all"
   
   git config --global http.proxy "${http_proxy}";
