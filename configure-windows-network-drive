@@ -1,0 +1,22 @@
+#! /bin/bash
+
+function main {
+  local -r username="${1:?[ERROR] username not provided}";
+  local -r password="${2:?[ERROR] password not provided}";
+  
+  # https://wiki.ubuntu.com/MountWindowsSharesPermanently
+
+  apt-get -y install cifs-utils
+  #apt-get -y install nfs-utils
+  
+  local server=192.168.38.5
+  local url=//$server/gdn01/Homes/U536884
+  #local target=/mnt/lan/
+  local target=./lan/home
+
+  mkdir -p  $target
+  mount -t cifs "${url}" "${target}" -o username="${username}",password="${password}",iocharset=utf8
+  # mount -t cifs "$url" "$target" -o credentials=./.windowscredentials,
+}
+
+main "$@";
