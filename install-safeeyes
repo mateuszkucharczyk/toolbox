@@ -1,0 +1,8 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main(){
+  $(install_from_manager "safeeyes" "ppa:slgobinath/safeeyes");
+}
+
+$(main "$@");
