@@ -3,17 +3,18 @@ source ./install.source.sh
 
 function main() {
   # fix potential problems with dpkg
-  apt-get -y update
-  apt-get -y purge runit
-  apt-get -y autoremove
-
-  apt-get -y clean
-  apt-get -y -f install
-  dpkg --configure -a
-
-  # upgrade packagest to newest versions
-  apt-get -y update
-  apt-get -y upgrade
+  apt-get -y update;
+  apt-get -y purge runit;
+  apt-get -y autoremove;
+  
+  apt-get -y clean;
+  apt-get -y -f install;
+  dpkg --configure -a;
+  
+  # upgrade packages to newest versions
+  apt-get -y update;
+  apt-get -y upgrade;
+  apt-get -y dist-upgrade;
 }
 
 main "$@"
