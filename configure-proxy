@@ -2,7 +2,7 @@
 
 function main() {
   local -r proxy="${1:?[ERROR] proxy not provided}";
-  echo "# system proxy configuration" > ~/.profile;
+  echo "# system proxy configuration" >> ~/.profile;
   echo "export http_proxy=\"${proxy}\";" >> ~/.profile;
   echo 'export https_proxy="${http_proxy}";' >> ~/.profile;
   echo 'export ftp_proxy="${http_proxy}";' >> ~/.profile;
