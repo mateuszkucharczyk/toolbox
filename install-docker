@@ -21,7 +21,21 @@ function installdocker() {
   apt-get -y install docker-ce;
 }
 
-function configuredocker() {
+function configuredockergroup() {
+  # Manage Docker as a non-root user
+  # https://docs.docker.com/install/linux/linux-postinstall/
+  # The docker daemon binds to a Unix socket instead of a TCP port.
+  # By default that Unix socket is owned by the user root and other
+  # users can only access it using sudo. The docker daemon always runs as the root user.
+  # If you don’t want to use sudo when you use the docker command, create a Unix group 
+  # called docker and add users to it. When the docker daemon starts, it makes 
+  # the ownership of the Unix socket read/writable by the docker group.
+  local -r user="${1:?[ERROR] user not provided}"
+  groupadd docker;
+  usermod -aG docker "${user}";
+}
+
+function configuredockerproxy() {  
   if [ -z "${http_proxy}" ]; then
     return 0;
   fi
@@ -52,7 +66,7 @@ function configuredocker() {
   mkdir -p "${daemon_config_directory}";
   echo "[Service]"  >> "${daemon_config_file}";
   echo "Environment=\"HTTP_PROXY=${http_proxy}\"" >> "${daemon_config_file}";
-  
+    
   # Flush changes:
   systemctl daemon-reload
   
@@ -61,8 +75,9 @@ function configuredocker() {
 }
 
 function main() {
-  $(installdocker);
-  $(configuredocker);
+  configuredockergroup "$@";
+  installdocker;
+  configuredockerproxy;
 }
 
-main "$@"
+main "$@";
