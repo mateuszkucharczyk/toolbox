@@ -2,6 +2,11 @@
 source ./install.source.sh
 
 function main() {
+  # https://askubuntu.com/questions/943463/library-corruption-error-during-apt-get-update
+  # Library corruption error during apt-get update
+  # ***Error in `appstreamcli'
+  apt-get -y install --reinstall libappstream*
+  
   # fix potential problems with dpkg
   apt-get -y update;
   apt-get -y purge runit;
@@ -10,7 +15,7 @@ function main() {
   apt-get -y clean;
   apt-get -y -f install;
   dpkg --configure -a;
-  
+    
   # upgrade packages to newest versions
   apt-get -y update;
   apt-get -y upgrade;
