@@ -5,7 +5,7 @@ function main() {
   install_from_manager "zip";
   install_from_manager "unzip";
   install_from_manager "jq";
-
+  install_from_manager "libxml2-utils";
 }
 
 main "$@"
