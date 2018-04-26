@@ -1,17 +1,47 @@
 #!/bin/bash
 
 function main() {
-  local -r proxy="${1:?[ERROR] proxy not provided}";
-  echo "# system proxy configuration" >> ~/.profile;
-  echo "export http_proxy=\"${proxy}\";" >> ~/.profile;
-  echo 'export https_proxy="${http_proxy}";' >> ~/.profile;
-  echo 'export ftp_proxy="${http_proxy}";' >> ~/.profile;
-  echo 'export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com";' >> ~/.profile;
-  echo 'export HTTP_PROXY="${http_proxy}";' >> ~/.profile;
-  echo 'export HTTPS_PROXY="${https_proxy}";' >> ~/.profile;
-  echo 'export FTP_PROXY="${ftp_proxy}";' >> ~/.profile;
-  echo 'export NO_PROXY="${no_proxy}";' >> ~/.profile;
-  echo "" >> ~/.profile;
+  local -r proxy="${1:?[ERROR] proxy not provided (http://<username>:<password>@<proxy>:<port>)}";
+  local -r noproxy="localhost,127.0.0.1,localaddress,.localdomain.com";  
+  # https://help.ubuntu.com/community/EnvironmentVariables#A.2Fetc.2Fenvironment
+  # System-wide environment variables
+  # A suitable file for environment variable settings that affect the system as a whole 
+  # (rather than just a particular user) is /etc/environment. 
+  # An alternative is to create a file for the purpose in the /etc/profile.d directory.
+  
+  # /etc/environment
+  # This file is specifically meant for system-wide environment variable settings. 
+  # It is not a script file, but rather consists of assignment expressions, one per line.
+  # Note: Variable expansion does not work in /etc/environment!
+  # Required by: sudo apt-get 
+  local -r environment="/etc/environment";
+  echo "# system proxy configuration" >> "${environment}";
+  echo "http_proxy=\"${proxy}\"" >> "${environment}";
+  echo "https_proxy=\"${proxy}\"" >> "${environment}";
+  echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
+  echo "no_proxy=\"${noproxy}\"" >> "${environment}";
+  echo "HTTP_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "HTTPS_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "FTP_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "NO_PROXY=\"${noproxy}\"" >> "${environment}";
+  echo "" >> "${environment}";
+  
+  # /etc/profile.d/*.sh
+  # Files with the .sh extension in the /etc/profile.d directory get executed whenever
+  # a bash login shell is entered (e.g. when logging in from the console or over ssh), 
+  # as well as by the DisplayManager when the desktop session loads.
+  # Required by: Mozilla Firefox
+  local -r profiled="/etc/profile.d/proxy.sh";
+  echo "# system proxy configuration" >> "${profiled}";
+  echo "export http_proxy=\"${proxy}\"" >> "${profiled}";
+  echo "export https_proxy=\"${proxy}\"" >> "${profiled}";
+  echo "export ftp_proxy=\"${proxy}\"" >> "${profiled}";
+  echo "export no_proxy=\"${noproxy}\"" >> "${profiled}";
+  echo "export HTTP_PROXY=\"${proxy}\"" >> "${profiled}";
+  echo "export HTTPS_PROXY=\"${proxy}\"" >> "${profiled}";
+  echo "export FTP_PROXY=\"${proxy}\"" >> "${profiled}";
+  echo "export NO_PROXY=\"${noproxy}\"" >> "${profiled}";
+  echo "" >> "${profiled}";
 }
 
 main "$@"
