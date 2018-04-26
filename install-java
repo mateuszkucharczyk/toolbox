@@ -2,7 +2,7 @@
 source ./install.source.sh
 
 function main() {
-  $(install_from_manager "install oracle-java8-installer" "ppa:webupd8team/java");
+  install_from_manager "oracle-java8-installer" "ppa:webupd8team/java";
 }
 
 main "$@"
