@@ -37,6 +37,14 @@ function mvorexit() {
   fi
 }
 
+function cdorexit() {
+  cd "$@";
+  if [[ "$?" -ne 0 ]]; then
+    exit 1
+  fi
+}
+
+
 function remove_old_installation() {
   local -r dir="${1:?[ERROR] Old installation directory not provided}"
   if [ -d "${dir}" ]; then
