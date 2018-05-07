@@ -1,0 +1,71 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+  #install_from_manager "gimp";
+  
+  # Download PhotoShop Themes and Keyboard Shortcuts pack.
+  local -r archive=$(wget_to_temp 'https://github.com/draekko/gimp-cc-themes/archive/master.zip');
+  local -r tmp=$(dirname ${archive});
+  unzip  "${archive}" -d "${tmp}";
+  local -r master="${tmp}/gimp-cc-themes-master";
+  
+  # Create user's gimp configuration directory
+  local version minor_version; 
+  version=$(gimp --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+$');
+  minor_version=$(echo "${version}" | grep -Eo '^[0-9]+\.[0-9]+');
+  if [ -z "${minor_version}" ]; then
+    echo "[ERROR] Cannot determine gimp version">&2
+    exit 1
+  fi
+  local -r configs=~/.gimp-${minor_version};
+  mkdirorexit -p "${configs}";
+
+  # move keyborad shortcuts config
+  mvorexit "${master}/ps_menurc" "${configs}/menurc";
+  mvorexit ${master}/*.pdf "${configs}"
+  
+  # move themes
+  local -r themes="${configs}/themes";
+  mkdirorexit -p "${themes}";
+  mvorexit ${master}/Gimp-CC-Theme-* "${themes}";
+  
+  # configure Preference
+  local -r gimprc="${configs}/gimprc";
+  echo '(undo-levels 50)' >> "${gimprc}";
+  echo '(undo-size 250M)' >> "${gimprc}";
+  echo '(thumbnail-size large)' >> "${gimprc}";
+  echo '(thumbnail-filesize-limit 250M)' >> "${gimprc}";
+  echo '(color-profile-policy convert)' >> "${gimprc}";
+  echo '(transparency-size small-checks)' >> "${gimprc}";
+  echo '(transparency-type light-checks)' >> "${gimprc}";
+  echo '(max-new-image-size 250M)' >> "${gimprc}";
+  echo '(theme "Gimp-CC-Theme-Darkest")' >> "${gimprc}";
+  echo '(language "en_US")' >> "${gimprc}";
+  
+  # TODO: install pugins
+  # Avesome Plugins
+  # www.bloomtimes.com/gimp-plugins
+  
+  # Configure Tools Settings
+
+  #Move Tools
+  #[*] Move the active layer
+  #
+  #Color Picker Tool
+  #[X] Sample average (Radius=3)
+  #
+  #
+  #Healing Tool
+  #[X] Sample merged
+  #Alignemtnt [Aligned]
+  #
+  #Crop Tool
+  #[No guides] -> [Rule of thirds]
+  #
+  #Clone Tool
+  #[X] Sample merged
+  #Aligment [Aligned]
+}
+
+main "$@"

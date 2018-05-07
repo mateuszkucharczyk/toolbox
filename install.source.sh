@@ -23,6 +23,20 @@ function get_bin_dir() {
   echo "$dir" 
 }
 
+function mkdirorexit() {
+  mkdir "$@";
+  if [[ "$?" -ne 0 ]]; then
+    exit 1
+  fi
+}
+
+function mvorexit() {
+  mv "$@";
+  if [[ "$?" -ne 0 ]]; then
+    exit 1
+  fi
+}
+
 function remove_old_installation() {
   local -r dir="${1:?[ERROR] Old installation directory not provided}"
   if [ -d "${dir}" ]; then
@@ -45,18 +59,13 @@ function unpack_by_extension() {
   local -r dst="${2:-$(dirname ${1})}";
 
   if [[ "${src}" =~ \.zip$ ]]; then
-    echo "unzipping..."
     unzip  "${src}" -d "${dst}"
-    echo "done"
   elif [[ "${src}" =~ \.tar\.gz$ ]]; then
-    echo "untaring..."
-    tar -xzf "${src}" -C "${dst}" 
-    echo "done"
+    tar -xzf "${src}" -C "${dst}"
   else
-    echo "copying..."
-    cp "${src}" "${dst}" 
-    echo "done"
+    cp "${src}" "${dst}"
   fi
+  echo "${dst}";
 }
 
 function wget_to_temp() {
@@ -64,6 +73,9 @@ function wget_to_temp() {
   local -r tmp=$(mktemp -d)
   
   wget --trust-server-names -P "${tmp}" "${url}"
+  if [[ "$?" -ne 0 ]]; then
+    exit 1
+  fi
   local archname
   archname=$(ls ${tmp})
   echo "${tmp}/${archname:?[ERROR] Cannot determine archive name}"
