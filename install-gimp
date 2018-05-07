@@ -2,7 +2,8 @@
 source ./install.source.sh
 
 function main() {
-  #install_from_manager "gimp";
+  #install gimp
+  install_from_manager "gimp";
   
   # Download PhotoShop Themes and Keyboard Shortcuts pack.
   local -r archive=$(wget_to_temp 'https://github.com/draekko/gimp-cc-themes/archive/master.zip');
