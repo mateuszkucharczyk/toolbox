@@ -1,0 +1,10 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+  install_from_manager 'gdebi'
+  local -r package=$(wget_to_temp 'http://download.xnview.com/XnViewMP-linux-x64.deb');
+  gdebi -y "${package}";
+}
+
+main "$@"

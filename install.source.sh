@@ -77,7 +77,7 @@ function unpack_by_extension() {
 }
 
 function wget_to_temp() {
-  local -r url="${1}"
+  local -r url="${1:?[ERROR] url not provided}"
   local -r tmp=$(mktemp -d)
   
   wget --trust-server-names -P "${tmp}" "${url}"
