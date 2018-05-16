@@ -53,12 +53,13 @@ function congifure_preferences() {
 
 function install_layereffects() {
   local -r configs="${1:?[ERROR] gimp configuration directory not provided}";
-  local -r scripts="${configs}/scripts";
-  mkdirorexit -p "${scripts}";
+  local -r plugins="${configs}/plug-ins";
+  mkdirorexit -p "${plugins}";
   
   # install Layer Effects plugin
-  local -r layerfx=$(wget_to_temp 'http://registry.gimp.org/files/layerfx.scm');
-  mvorexit "${layerfx}" "${scripts}";
+  local -r layerfx=$(wget_to_temp 'http://registry.gimp.org/files/layerfx.2.8.py.txt');
+  chmod +x "${layerfx}";
+  mvorexit "${layerfx}" "${plugins}/layerfx.py";
 }
 
 function install_photoeffects() {
@@ -84,15 +85,16 @@ function install_photoeffects() {
 }
 
 function main() {
-  install_from_manager "gimp";
+  #install_from_manager "gimp";
   local -r configs=$(create_gimp_config_dir);
-  install_photoshop_pack "${configs}";
-  congifure_preferences "${configs}";
+  #install_photoshop_pack "${configs}";
+  #install_photoshop_pack "${configs}";
+  #congifure_preferences "${configs}";
   
   # install plugins
   # Avesome Plugins: www.bloomtimes.com/gimp-plugins  
   install_layereffects "${configs}";
-  install_photoeffects "${configs}";
+  #install_photoeffects "${configs}";
   
   # TODO: Configure Tools Settings
   #Move Tools
