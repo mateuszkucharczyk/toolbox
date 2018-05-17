@@ -85,16 +85,16 @@ function install_photoeffects() {
 }
 
 function main() {
-  #install_from_manager "gimp";
+  install_from_manager "gimp";
   local -r configs=$(create_gimp_config_dir);
-  #install_photoshop_pack "${configs}";
-  #install_photoshop_pack "${configs}";
-  #congifure_preferences "${configs}";
+  install_photoshop_pack "${configs}";
+  install_photoshop_pack "${configs}";
+  congifure_preferences "${configs}";
   
   # install plugins
   # Avesome Plugins: www.bloomtimes.com/gimp-plugins  
   install_layereffects "${configs}";
-  #install_photoeffects "${configs}";
+  install_photoeffects "${configs}";
   
   # TODO: Configure Tools Settings
   #Move Tools
