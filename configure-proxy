@@ -14,24 +14,35 @@ function main() {
   # It is not a script file, but rather consists of assignment expressions, one per line.
   # Note: Variable expansion does not work in /etc/environment!
   # Required by: sudo apt-get 
-  local -r environment="/etc/environment";
-  echo "# system proxy configuration" >> "${environment}";
-  echo "http_proxy=\"${proxy}\"" >> "${environment}";
-  echo "https_proxy=\"${proxy}\"" >> "${environment}";
-  echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
-  echo "no_proxy=\"${noproxy}\"" >> "${environment}";
-  echo "HTTP_PROXY=\"${proxy}\"" >> "${environment}";
-  echo "HTTPS_PROXY=\"${proxy}\"" >> "${environment}";
-  echo "FTP_PROXY=\"${proxy}\"" >> "${environment}";
-  echo "NO_PROXY=\"${noproxy}\"" >> "${environment}";
-  echo "" >> "${environment}";
+  # local -r environment="/etc/environment";
+  # echo "# system proxy configuration" >> "${environment}";
+  # echo "http_proxy=\"${proxy}\"" >> "${environment}";
+  # echo "https_proxy=\"${proxy}\"" >> "${environment}";
+  # echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
+  # echo "no_proxy=\"${noproxy}\"" >> "${environment}";
+  # echo "HTTP_PROXY=\"${proxy}\"" >> "${environment}";
+  # echo "HTTPS_PROXY=\"${proxy}\"" >> "${environment}";
+  # echo "FTP_PROXY=\"${proxy}\"" >> "${environment}";
+  # echo "NO_PROXY=\"${noproxy}\"" >> "${environment}";
+  # echo "" >> "${environment}";
+
+  # /etc/apt/apt.conf.d/
+  # proxies for apt-get and Update Manager
+  local -r aptconfd="/etc/apt/apt.conf.d/95proxies";
+  rm -f "${aptconfd}";
+  
+  echo "Acquire::http::proxy \"${proxy}\";" >> "${aptconfd}";
+  echo "Acquire::ftp::proxy \"${proxy}\";" >> "${aptconfd}";
+  echo "Acquire::https::proxy \"${proxy}\";" >> "${aptconfd}";
   
   # /etc/profile.d/*.sh
   # Files with the .sh extension in the /etc/profile.d directory get executed whenever
   # a bash login shell is entered (e.g. when logging in from the console or over ssh), 
   # as well as by the DisplayManager when the desktop session loads.
-  # Required by: Mozilla Firefox
+  # Required by: Mozilla Firefox, git
   local -r profiled="/etc/profile.d/proxy.sh";
+  rm -f "${profiled}";
+  
   echo "# system proxy configuration" >> "${profiled}";
   echo "export http_proxy=\"${proxy}\"" >> "${profiled}";
   echo "export https_proxy=\"${proxy}\"" >> "${profiled}";
@@ -42,6 +53,7 @@ function main() {
   echo "export FTP_PROXY=\"${proxy}\"" >> "${profiled}";
   echo "export NO_PROXY=\"${noproxy}\"" >> "${profiled}";
   echo "" >> "${profiled}";
+
 }
 
 main "$@"
