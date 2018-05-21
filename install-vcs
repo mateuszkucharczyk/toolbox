@@ -5,6 +5,8 @@ function main() {
   install_from_manager "git-daemon-sysvinit"
   install_from_manager "git-all"
   
+  git config --global alias.hist "log --all --graph --decorate --oneline";
+  
   # use environment variables instead
   # git config --global http.proxy "${http_proxy}";
   
