@@ -13,18 +13,17 @@ function main() {
   # This file is specifically meant for system-wide environment variable settings. 
   # It is not a script file, but rather consists of assignment expressions, one per line.
   # Note: Variable expansion does not work in /etc/environment!
-  # Required by: sudo apt-get 
-  # local -r environment="/etc/environment";
-  # echo "# system proxy configuration" >> "${environment}";
-  # echo "http_proxy=\"${proxy}\"" >> "${environment}";
-  # echo "https_proxy=\"${proxy}\"" >> "${environment}";
-  # echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
-  # echo "no_proxy=\"${noproxy}\"" >> "${environment}";
-  # echo "HTTP_PROXY=\"${proxy}\"" >> "${environment}";
-  # echo "HTTPS_PROXY=\"${proxy}\"" >> "${environment}";
-  # echo "FTP_PROXY=\"${proxy}\"" >> "${environment}";
-  # echo "NO_PROXY=\"${noproxy}\"" >> "${environment}";
-  # echo "" >> "${environment}";
+  local -r environment="/etc/environment";
+  echo "# system proxy configuration" >> "${environment}";
+  echo "http_proxy=\"${proxy}\"" >> "${environment}";
+  echo "https_proxy=\"${proxy}\"" >> "${environment}";
+  echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
+  echo "no_proxy=\"${noproxy}\"" >> "${environment}";
+  echo "HTTP_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "HTTPS_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "FTP_PROXY=\"${proxy}\"" >> "${environment}";
+  echo "NO_PROXY=\"${noproxy}\"" >> "${environment}";
+  echo "" >> "${environment}";
 
   # /etc/apt/apt.conf.d/
   # proxies for apt-get and Update Manager
