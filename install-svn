@@ -1,0 +1,11 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+  install_from_manager "subversion"
+  # download "http://www.smartsvn.com/static/svn/download/smartsvn/smartsvn-linux-9_2_1.tar.gz" "smartsvn" "./bin/smartsvn.sh" 
+  
+  # add-apt-repository -y ppa:rabbitvcs/ppa
+}
+
+main "$@"

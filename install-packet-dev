@@ -1,0 +1,23 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+  ./install-java
+  ./install-maven
+  ./install-intellij
+  ./install-docker
+
+  ./install-shellcheck
+  
+  ./install-git
+  ./install-svn
+  
+  ./install-squirrelsql
+  ./install-soapui
+  
+  ./install-meld
+  ./install-notepad
+  ./install-documentation
+}
+
+main "$@"
