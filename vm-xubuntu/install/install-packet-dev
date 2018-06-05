@@ -2,10 +2,12 @@
 source ./install.source.sh
 
 function main() {
+  local -r user="${1:?[ERROR] user not provided}"
+
   ./install-java
   ./install-maven
   ./install-intellij
-  ./install-docker
+  ./install-docker "${user}"
 
   ./install-shellcheck
   
