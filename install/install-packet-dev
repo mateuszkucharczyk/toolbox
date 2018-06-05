@@ -16,6 +16,7 @@ function main() {
   
   ./install-squirrelsql
   ./install-soapui
+  ./install-postman
   
   ./install-meld
   ./install-notepad
