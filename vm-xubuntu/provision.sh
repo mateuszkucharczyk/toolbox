@@ -11,7 +11,7 @@ function start_cntlm() {
 
 function main() {
   local -r http_proxy="${1:?[ERROR] http_proxy not provided (http://<domain>\<username>:<password>@<proxy>:<port>)}";
-  pushd /vagrant/toolbox
+  pushd /vagrant/install
   ./configure-proxy "${http_proxy}"
   apt-get update && apt-get install -y cntlm
   ./configure-cntlm "${http_proxy}"
