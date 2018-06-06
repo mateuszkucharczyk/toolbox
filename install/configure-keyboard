@@ -1,0 +1,15 @@
+#!/bin/bash
+
+function main() {
+  #disable window move ALT+left mouse button
+  xfconf-query -c xfwm4 -p "/general/easy_click" -s none;
+  
+  #disable shortcuts in conflict with IntellJIdea
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Left" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Right" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Up" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Down" -r;
+}
+
+main "@$";
