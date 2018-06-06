@@ -1,0 +1,39 @@
+#!/bin/bash
+source ./install.source.sh
+
+function install_from_fontsquirrel() {
+	local -r url="${1:?[ERROR] url not provided}";
+  	local -r dst="${2:?[ERROR] dst not provided}";
+	local -r ext="${3:?[ERROR] ext not provided}";
+
+	local -r filename=$(echo "${url}" | cut -d '?' -f1 | tr '/' '\n' | tail -n1);
+	local -r tmp=$(mktemp -d);
+	cdorexit "${tmp}";
+	wget -q -O "${filename}" "${url}"
+	if [[ "$?" -ne 0 ]]; then
+		exit 1
+	fi
+	
+	unzip -q "${filename}";	
+	mvorexit ${ext} "${dst}";
+	
+	rm -rf "${tmp}";
+}
+
+function install_fonts() {
+  	local -r dst="${1:?[ERROR] dst not provided}";
+	
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/alex-brush" "${dst}" "*.ttf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/kaushan-script" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/great-vibes" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/ChunkFive" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/allura" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/pacifico" "${dst}" "*.ttf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/Lobster" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/blackjack" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/CAC-Champagne" "${dst}" "*.ttf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/quicksand" "${dst}" "*.otf";
+	install_from_fontsquirrel "https://www.fontsquirrel.com/fonts/download/League-Gothic" "${dst}" "*.otf";
+}
+
+install_fonts "$@"

@@ -1,6 +1,5 @@
 #!/bin/bash
 source ./install.source.sh
-source ./install_gimp_brushes
 
 function create_gimp_config_dir() {
   # Create user's gimp configuration directory
@@ -98,7 +97,8 @@ function main() {
   install_photoeffects "${configs}";
   
   # install brushes and fonts
-  install_brushes "${configs}/brushes"; 
+  ./install-gimp-brushes "${configs}/brushes"; 
+  ./install-gimp-fonts "${configs}/fonts"; 
   
   # TODO: Configure Tools Settings
   #Move Tools
