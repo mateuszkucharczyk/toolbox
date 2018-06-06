@@ -1,0 +1,48 @@
+#!/bin/bash
+source ./install.source.sh
+
+function install_from_deviantart() {
+  local -r url="${1:?[ERROR] url not provided}";
+  local -r dst="${2:?[ERROR] dst not provided}";
+  local -r ext="${3:?[ERROR] ext not provided}";
+  local -r xpath="string(//a[@class='dev-page-button dev-page-button-with-text dev-page-download']/@href)";
+
+  local -r tmp=$(mktemp -d);
+  cdorexit "${tmp}";
+  local href;
+  href=$(wget -qO- --keep-session-cookies --save-cookies cookies "${url}" | xmllint --html --xpath "${xpath}" - 2>/dev/null);
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] wget | xmllint: cannot get download link"; 
+    exit 1;
+  fi
+  
+  local -r filename=$(echo "${href}" | cut -d '?' -f1 | tr '/' '\n' | tail -n1);
+  wget -q -O "${filename}" --load-cookies cookies "${href}";
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] wget | xmllint: cannot download ${filename}";  
+    exit 1;
+  fi
+  
+  local -r dirtounpack="${filename%.*}";
+  mkdirorexit "${dirtounpack}";
+  unpack_by_extension "${filename}" "${dirtounpack}";  
+  
+  cdorexit "${dirtounpack}";
+  mvorexit ${ext} "${dst}";
+  
+  rm -rf "${tmp}";
+}
+
+function install_brushes() {
+  local -r dst="${1:?[ERROR] destination directory not provided}";
+  local -r ext="*.abr";
+  
+  local -r brush_splatter_6="https://mcbadshoes.deviantart.com/art/Splatter-6-95528279";
+  install_from_deviantart "${brush_splatter_6}" "${dst}" "${ext}";
+  
+  local -r brush_watercolor="https://mcbadshoes.deviantart.com/art/Hi-Res-Brushes-106567536"
+  install_from_deviantart "${brush_watercolor}" "${dst}" "${ext}";
+  
+  local -r brush_smoke="https://falln-stock.deviantart.com/art/Smoke-Brushes-Set-1-92730901"
+  install_from_deviantart "${brush_smoke}" "${dst}" "${ext}";
+}

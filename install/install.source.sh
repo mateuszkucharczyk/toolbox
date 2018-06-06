@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function echoerr() { 
+  echo "$@" 1>&2; 
+}
+
 function get_local_dir() {
   # set to overwrite for test purposes
   if [[ -n "${LOCAL_DIR_OVERWRITE}" ]]; then
@@ -67,7 +71,7 @@ function unpack_by_extension() {
   local -r dst="${2:-$(dirname ${1})}";
 
   if [[ "${src}" =~ \.zip$ ]]; then
-    unzip  "${src}" -d "${dst}"
+    unzip -q "${src}" -d "${dst}"
   elif [[ "${src}" =~ \.tar\.gz$ ]]; then
     tar -xzf "${src}" -C "${dst}"
   else
