@@ -46,3 +46,5 @@ function install_brushes() {
   local -r brush_smoke="https://falln-stock.deviantart.com/art/Smoke-Brushes-Set-1-92730901"
   install_from_deviantart "${brush_smoke}" "${dst}" "${ext}";
 }
+
+install_brushes "$@";
