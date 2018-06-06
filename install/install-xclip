@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function main() {
+  apt-get update;
+  apt-get install -y xclip;
+  
+  # Create mac style aliases for clipboard access.
+  echo 'alias pbcopy="xclip -selection c";' >> "${HOME}/.bashrc";
+  echo 'alias pbpaste="xclip -selection c -o";' >> "${HOME}/.bashrc";
+}
+
+main "@$";
