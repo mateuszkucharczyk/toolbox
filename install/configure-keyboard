@@ -10,6 +10,9 @@ function main() {
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Right" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Up" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Down" -r;
+  
+  #enable L-Alt in terminal to be used to navigation
+  echo "ShortcutsNoMnemonics=TRUE" >> "${HOME}/.config/xfce4/terminal/terminalrc"
 }
 
 main "@$";
