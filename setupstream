@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function main {
+  local -r path="${1:-$(pwd)}";
+  cd "${path}"
   git init;
   git remote add origin https://github.com/mateuszkucharczyk/toolbox.git
   git fetch

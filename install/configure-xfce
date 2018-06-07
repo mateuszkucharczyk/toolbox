@@ -15,9 +15,6 @@ function main() {
   xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>l" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>Delete" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>l" -n -t string -s "xflock4";
-  
-  #enable L-Alt in terminal to be used to navigation
-  echo "ShortcutsNoMnemonics=TRUE" >> "${HOME}/.config/xfce4/terminal/terminalrc"
 }
 
-main "@$";
+main "$@";

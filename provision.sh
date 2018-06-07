@@ -11,6 +11,8 @@ function start_cntlm() {
 
 function main() {
   local -r http_proxy="${1:?[ERROR] http_proxy not provided (http://<domain>\<username>:<password>@<proxy>:<port>)}";
+  local -r user="vagrant";
+  
   pushd /vagrant/install
   ./configure-proxy "${http_proxy}"
   apt-get update && apt-get install -y cntlm
@@ -18,8 +20,15 @@ function main() {
   ./configure-proxy "http://127.0.0.1:3128"
   start_cntlm
   ./configure-apt
+  
+  # fixme: applied to root user instead vagrant user
+  #./configure-xfce 
+  
+  source /etc/profile.d/proxy.sh;
   ./install-packet-installation-tools 
-  #./install-packet-dev "vagrant"
+  ./install-git
+  ../setupstream "/vagrant"
+  #./install-packet-dev "${user}"
   popd;
 }
 

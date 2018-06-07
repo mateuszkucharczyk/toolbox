@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function main() { 
+  #enable L-Alt in terminal to be used to navigation
+  local -r terminalrc="${HOME}/.config/xfce4/terminal/terminalrc";
+  echo "ShortcutsNoMnemonics=TRUE" >> "${terminalrc}";
+}
+
+main "$@";
