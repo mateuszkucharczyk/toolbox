@@ -30,14 +30,16 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "xubuntu"
 
   config.vm.provider "virtualbox" do |vb|
-  vb.name = "vm-xubuntu"
+  #vb.name = "vm-xubuntu-test"
   vb.gui = gui
   
   # Customize the resources on the VM:
   vb.memory = 10240
   vb.cpus = 2
   vb.customize ["modifyvm", :id, "--vram", "64"]
+  # disable 2D acceleration - it works only for Windows guest
   vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]
+  # disable 3D acceleration - IntellJ Toolbox does not display when turned on
   vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
   
   vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
