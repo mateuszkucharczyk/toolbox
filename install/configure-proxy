@@ -14,7 +14,11 @@ function main() {
   # It is not a script file, but rather consists of assignment expressions, one per line.
   # Note: Variable expansion does not work in /etc/environment!
   local -r environment="/etc/environment";
-  echo "# system proxy configuration" >> "${environment}";
+  if [ -f "${environment}" ]; then
+    #filter out existing proxy settings
+    local -r filtered_content=$(cat '/etc/environment' | grep -ivE "(http{1}s?|ftp|no)_proxy");
+    echo "${filtered_content}" > "${environment}";
+  fi
   echo "http_proxy=\"${proxy}\"" >> "${environment}";
   echo "https_proxy=\"${proxy}\"" >> "${environment}";
   echo "ftp_proxy=\"${proxy}\"" >> "${environment}";
