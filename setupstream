@@ -3,12 +3,20 @@
 function main {
   local -r path="${1:-$(pwd)}";
   cd "${path}"
+  
+  local -r is_init=$(git rev-parse 2> /dev/null; [ $? == 0 ] && echo 1);
+  if [ ${is_init} ] ; then
+    return 0;
+  fi
   git init;
   git remote add origin https://github.com/mateuszkucharczyk/toolbox.git
   git fetch
   git reset origin/master
   git branch --set-upstream-to=origin/master master
   git fetch;
+  
+  git config user.email "mateuszkucharczyk@protonmail.com";
+  git config user.name "mateuszkucharczyk";
 }
 
 main "$@";
