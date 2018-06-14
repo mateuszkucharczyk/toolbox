@@ -1,1 +1,3 @@
 .vagrant/
+stdout
+stderr

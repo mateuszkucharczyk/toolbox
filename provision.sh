@@ -32,4 +32,4 @@ function main() {
   popd;
 }
 
-main "$@"
+main "$@" > /vagrant/stdout
