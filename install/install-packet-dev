@@ -8,6 +8,8 @@ function main() {
   ./install-maven
   ./install-intellij
   ./install-docker "${user}"
+  
+  ./install-nodejs
 
   ./install-shellcheck
   

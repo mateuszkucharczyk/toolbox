@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function main() {
+  #https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+  #https://www.npmjs.com/get-npm
+  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
+  sudo apt-get install -y nodejs && \
+  npm install npm@latest -g && \
+  npm install @angular/cli -g;
+}
+
+main "$@";
