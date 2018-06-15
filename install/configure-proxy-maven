@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function main() {
+	local -r proxy="${1:?[ERROR] proxy not provided (http://<host>:<port>)}";
+	local -r host=$(echo ${proxy} | cut -d ':' -f2 | cut -c 3-);
+  local -r port=$(echo ${proxy} | cut -d ':' -f3);
+
+  local m2home;
+  m2home=$(mvn -v | grep 'Maven home:' |  sed 's/^Maven home:[[:space:]]*//');
+  if [[ "$?" -ne 0 ]]; then
+    exit 1;
+  fi
+
+  local -r m2settings="${m2home}/conf/settings.xml";
+  local -r m2proxy='
+  <proxies>
+    <proxy>
+      <id>proxy-http</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>'${host}'</host>
+      <port>'${port}'</port>
+    </proxy>
+    <proxy>
+      <id>proxy-https</id>
+      <active>true</active>
+      <protocol>https</protocol>
+      <host>'${host}'</host>
+      <port>'${port}'</port>
+    </proxy>
+  </proxies>
+</settings>';
+
+  perl -i -0pe 's/\s*<proxies>(\n|.)*<\/proxies>\s*/''/' "${m2settings}";
+  sed -i 's/<\/settings>.*//' "${m2settings}";
+  echo "${m2proxy}" >> "${m2settings}";
+}
+
+main "$@";
