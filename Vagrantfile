@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
   # disable 2D acceleration - it works only for Windows guest
   vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]
   # disable 3D acceleration - IntellJ Toolbox does not display when turned on
-  vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+  vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
   
   vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
   
