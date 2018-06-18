@@ -6,7 +6,7 @@ function main() {
 
   ./install-java
   ./install-maven
-  ./configure-proxy-maven "${http_proxy}"
+  ./configure-maven-proxy "${http_proxy}"
   ./install-intellij
   ./install-docker "${user}"
   
