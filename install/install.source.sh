@@ -4,6 +4,16 @@ function echoerr() {
   echo "$@" 1>&2; 
 }
 
+function requires() {
+  for the_command in "$@"
+  do
+    if ! type "${the_command}" >/dev/null 2>&1; then
+      echoerr "[ERROR] I require '${the_command}' but it's not installed.  Aborting."; 
+      exit 1;
+    fi
+  done
+}
+
 function get_local_dir() {
   # set to overwrite for test purposes
   if [[ -n "${LOCAL_DIR_OVERWRITE}" ]]; then
@@ -30,6 +40,7 @@ function get_bin_dir() {
 function mkdirorexit() {
   mkdir "$@";
   if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] cannot 'mkdir ${$@}'. Aborting."; 
     exit 1
   fi
 }
@@ -37,6 +48,7 @@ function mkdirorexit() {
 function mvorexit() {
   mv "$@";
   if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] cannot 'mv ${$@}'. Aborting."; 
     exit 1
   fi
 }
@@ -44,6 +56,7 @@ function mvorexit() {
 function cdorexit() {
   cd "$@";
   if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] cannot 'cd ${$@}'. Aborting."; 
     exit 1
   fi
 }

@@ -1,0 +1,16 @@
+#!/bin/bash
+source ./install.source.sh
+
+function main() {
+   requires "git" "mvn";
+
+   local -r user="${1:?[ERROR] user not provided}";
+   local -r projects="/home/${user}/projects";
+   mkdirorexit -p "${projects}";
+   cdorexit "${projects}";
+   git clone "https://github.com/mateuszkucharczyk/archetypes.git";
+   cdorexit "archetypes";
+   mvn 'clean' 'install';
+}
+
+main "$@"
