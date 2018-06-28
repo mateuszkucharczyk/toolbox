@@ -1,7 +1,9 @@
 #!/bin/bash
 
 function main {
-  local -r path="${1:-$(pwd)}";
+  local -r url="${1:?[ERROR] url not provided}";
+  local -r path="${2:-$(pwd)}";
+  
   cd "${path}"
   
   local -r is_init=$(git rev-parse 2> /dev/null; [ $? == 0 ] && echo 1);
@@ -9,7 +11,7 @@ function main {
     return 0;
   fi
   git init;
-  git remote add origin https://github.com/mateuszkucharczyk/toolbox.git
+  git remote add origin "${url}"
   git fetch
   git reset origin/master
   git branch --set-upstream-to=origin/master master

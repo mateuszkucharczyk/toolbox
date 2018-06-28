@@ -30,7 +30,6 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "xubuntu"
 
   config.vm.provider "virtualbox" do |vb|
-  #vb.name = "vm-xubuntu-test"
   vb.gui = gui
   
   # Customize the resources on the VM:
@@ -54,8 +53,8 @@ Vagrant.configure("2") do |config|
   end
 
   # escape '\'
-  # http://<domain>\\<username>:<password>@<proxy>:<port>
-  config.vm.provision "shell", path: "provision.sh", args: "#{ENV['http_proxy']}"
+  # http://<username>:<password>@<proxy>:<port>
+  config.vm.provision "shell", path: "provision.sh", args: ["#{ENV['http_proxy']}", "#{ENV['USERDOMAIN']}"]
   
   
   # Disable automatic box update checking. If you disable this, then

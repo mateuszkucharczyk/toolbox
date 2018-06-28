@@ -1,34 +1,34 @@
 #!/bin/bash
 
 function main() {
-	local -r url="${1:?[ERROR] url not provided (http://<domain>\<username>:<password>@<proxy>:<port>)}";
-	
-	local -r domain=$(echo ${url} | cut -d '\' -f1 | cut -d '/' -f3);
-	local -r user=$(echo ${url} | cut -d '\' -f2 | cut -d '@' -f1 | cut -d ':' -f1);	
-	local -r password=$(echo ${url} | cut -d '\' -f2 | cut -d '@' -f1 | cut -d ':' -f2);	
-	local -r proxy=$(echo ${url} | cut -d '\' -f2 | cut -d '@' -f2);
-	
-	local hash;
-	hash=$(echo ${password} | cntlm -H -u${user} -d${domain} | grep PassNTLMv2);
-	
-	rm /etc/cntlm.conf;
-	echo "Username	${user}" >> /etc/cntlm.conf;
-	echo "Domain		${domain}" >> /etc/cntlm.conf;
-	echo "Auth        NTLMv2" >> /etc/cntlm.conf; 
-	echo "${hash}" >> /etc/cntlm.conf;
-	echo "Proxy		${proxy}" >> /etc/cntlm.conf;
-	echo "NoProxy		localhost, 127.0.0.*, 10.*, 192.168.*" >> /etc/cntlm.conf;
-	echo "Listen		3128" >> /etc/cntlm.conf;
-	echo "Gateway	yes" >> /etc/cntlm.conf;
-	echo "Allow       127.0.0.1" >> /etc/cntlm.conf;
-	echo "Allow       10.158.3.90" >> /etc/cntlm.conf;
-	echo "Allow       10.158.95.59" >> /etc/cntlm.conf;
-	echo "Allow       10.200.251.25" >> /etc/cntlm.conf;
-	echo "Allow       10.0.15.10" >> /etc/cntlm.conf;
-	echo "Allow       192.168.56.1" >> /etc/cntlm.conf;
-	echo "#Deny       0/0" >> /etc/cntlm.conf;
-	
-	service cntlm restart;
+  local -r url="${1:?[ERROR] url not provided (http://<username>:<password>@<proxy>:<port>)}";
+  local -r domain="${2:?[ERROR] domain not provided}";
+
+  local -r user=$(echo ${url} | cut -d '@' -f1 | cut -d ':' -f2 | cut -c 3-);
+  local -r password=$(echo ${url} | cut -d '@' -f1 | cut -d ':' -f3);
+  local -r proxy=$(echo ${url} | cut -d '@' -f2);
+
+  local hash;
+  hash=$(echo ${password} | cntlm -H -u${user} -d${domain} | grep PassNTLMv2);
+  
+  rm /etc/cntlm.conf;
+  echo "Username  ${user}" >> /etc/cntlm.conf;
+  echo "Domain    ${domain}" >> /etc/cntlm.conf;
+  echo "Auth        NTLMv2" >> /etc/cntlm.conf; 
+  echo "${hash}" >> /etc/cntlm.conf;
+  echo "Proxy   ${proxy}" >> /etc/cntlm.conf;
+  echo "NoProxy   localhost, 127.0.0.*, 10.*, 192.168.*" >> /etc/cntlm.conf;
+  echo "Listen    3128" >> /etc/cntlm.conf;
+  echo "Gateway yes" >> /etc/cntlm.conf;
+  echo "Allow       127.0.0.1" >> /etc/cntlm.conf;
+  echo "Allow       10.158.3.90" >> /etc/cntlm.conf;
+  echo "Allow       10.158.95.59" >> /etc/cntlm.conf;
+  echo "Allow       10.200.251.25" >> /etc/cntlm.conf;
+  echo "Allow       10.0.15.10" >> /etc/cntlm.conf;
+  echo "Allow       192.168.56.1" >> /etc/cntlm.conf;
+  echo "#Deny       0/0" >> /etc/cntlm.conf;
+  
+  service cntlm restart;
 }
 
 main "$@"
