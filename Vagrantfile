@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   # https://docs.vagrantup.com.
 
   #disable vagrant-proxyconf plugin
-  config.proxy.enabled = false
+  #config.proxy.enabled = false
   
   config.vm.box = "bstoots/xubuntu-16.04-desktop-amd64"
   config.vm.hostname = "xubuntu"
