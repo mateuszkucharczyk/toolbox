@@ -1,3 +1,6 @@
 .vagrant/
+iac-provision-*/
 stdout
+stdout-*
 stderr
+stderr-*

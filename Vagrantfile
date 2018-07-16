@@ -3,14 +3,18 @@
 
 require 'getoptlong'
 opts = GetoptLong.new(
-        [ '--no-gui', GetoptLong::NO_ARGUMENT ]
+        [ '--no-gui', GetoptLong::NO_ARGUMENT ],
+        [ '--script', GetoptLong::OPTIONAL_ARGUMENT]
 )
 
 gui = true
-opts.each do |opt|
+script='provision.sh'
+opts.each do |opt, arg|
  case opt
    when '--no-gui'
     gui = false
+   when '--script'
+    script = arg
  end
 end
 
@@ -54,7 +58,7 @@ Vagrant.configure("2") do |config|
 
   # escape '\'
   # http://<username>:<password>@<proxy>:<port>
-  config.vm.provision "shell", path: "provision.sh", args: ["#{ENV['http_proxy']}", "#{ENV['USERDOMAIN']}"]
+  config.vm.provision "shell", path: "#{script}", args: ["#{ENV['http_proxy']}", "#{ENV['USERDOMAIN']}"]
   
   
   # Disable automatic box update checking. If you disable this, then
