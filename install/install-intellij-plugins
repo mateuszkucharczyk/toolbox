@@ -1,0 +1,58 @@
+#!/bin/bash
+source ./install.source.sh
+
+function install_plugin() {
+  local -r plugins="${1:?[ERROR] plugins directory not provided}";
+	local -r pluginId="${2:?[ERROR] pluginId not provided}";
+	local -r query_url='http://plugins.jetbrains.com/plugin/updates?pluginId='"${pluginId}"'&channel=&start=0&size=1';
+  
+	local href;
+	href=$(wget -qO- "${query_url}" | jq -r '.updates[0].file');
+	if [[ "$?" -ne 0 ]]; then
+		echoerr "[ERROR] wget | jq: cannot get download link"; 
+		exit 1;
+	fi
+  
+	local -r tmp=$(mktemp -d);
+	cdorexit "${tmp}";
+	local -r download_url='http://plugins.jetbrains.com/files/'"${href}";
+	wget -q "${download_url}";
+	if [[ "$?" -ne 0 ]]; then
+    	echoerr "[ERROR] wget cannot download ${download_url}";  
+    	exit 1;
+  	fi
+	
+	unpack_by_extension * "${plugins}";
+	rm -rf "${tmp}";
+}
+
+function main() {
+	local -r idea=$(find  ~ -maxdepth 1 -wholename $HOME'/.*Idea*');
+	local -r plugins="${idea}/config/plugins";
+  
+  echo 'Installing IntelliJ IDEA Community plugins...'
+  ### IntelliJ IDEA Community ###
+	echo 'Key Promoter X...'
+	install_plugin "${plugins}" 9792
+	echo 'Lombok Plugin...'
+	install_plugin "${plugins}" 6317
+	echo 'BashSupport...'
+	install_plugin "${plugins}" 4230
+	echo 'String Manipulation...'
+	install_plugin "${plugins}" 2162
+	echo '.ignore...'
+	install_plugin "${plugins}" 7495
+	echo 'Markdown support...'
+	install_plugin "${plugins}" 7793
+	#echo 'JRebel for IntelliJ...'
+	#install_plugin "${plugins}" 4441
+	echo 'Docker integration...'
+	install_plugin "${plugins}" 7724
+	echo 'Eclipse Code Formatter...'
+	install_plugin "${plugins}" 6546
+	echo 'GsonFormat...'
+	install_plugin "${plugins}" 7654
+	
+}
+
+main "$@";
