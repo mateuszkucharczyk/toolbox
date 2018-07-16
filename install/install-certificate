@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function main() {
+  local -r crt_file="${1:?[ERROR] .crt file not provided}";
+  local -r crt_name=${crt_file##*/};
+  
+  # system
+  cp "${crt_file}"  "/usr/local/share/ca-certificates";
+  update-ca-certificates;
+  
+  # java
+  local -r security="${JAVA_HOME}/lib/security/";
+  mkdir -p "${security}";
+  keytool -import -trustcacerts -keystore "${security}/cacerts" -storepass changeit -noprompt -alias "${crt_name}" -file "${crt_file}";
+  
+  # https://blog.avirtualhome.com/adding-ssl-certificates-to-google-chrome-linux-ubuntu/
+  # Google Chrome in Linux doesn’t have a SSL certificate manager, it relies on the NSS Shared DB.
+  certutil -d sql:$HOME/.pki/nssdb -A -t TC -n "${crt_name}" -i "${crt_file}";
+}
+
+main "$@";
