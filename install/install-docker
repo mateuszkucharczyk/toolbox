@@ -45,7 +45,7 @@ function configuredockerproxy() {
   local -r directory=~/.docker;
   local -r file="${directory}/config.json";
   
-  mkdir --mode=666 -p "${directory}";
+  mkdir --mode=777 -p "${directory}";
   echo '{' >> "${file}";
   echo ' "proxies":' >> "${file}";
   echo '  {' >> "${file}";
