@@ -4,6 +4,9 @@ function main() {
   #disable window move ALT+left mouse button
   xfconf-query -c xfwm4 -p "/general/easy_click" -s none;
   
+  # set keyboard-layout=polish-programmer
+  xfconf-query -c keyboard-layout -p '/Default/XkbVariant' -s 'legacy'
+  
   #disable shortcuts in conflict with IntellJIdea
   xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Left" -r;
