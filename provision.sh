@@ -1,12 +1,11 @@
 #!/bin/bash
 
-function main() {
-  local -r http_proxy="${1:?[ERROR] http_proxy not provided (http://<domain>\<username>:<password>@<proxy>:<port>)}";
-  local -r domain="${2:?[ERROR] domain not provided}";
-  local -r user="vagrant";
+function main() { 
+  printenv | grep proxy
   
   pushd /vagrant/install
   ./configure-apt
+  
   
   # fixme: applied to root user instead vagrant user
   #./configure-xfce 
@@ -18,4 +17,4 @@ function main() {
   popd;
 }
 
-main "$@" > /vagrant/stdout-dev
+main "$@" > /vagrant/stdout-dev.log

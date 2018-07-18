@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ./install.source.sh
+
+function main() {
+  local -r config='/etc/cntlm.conf';
+  for var in "$@"
+  do
+  	prepend_first_matching_line '\s*Listen\s.*' "Listen ${var}" '/etc/cntlm.conf'
+  done
+
+  service cntlm restart;
+}
+
+main "$@"

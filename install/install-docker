@@ -1,8 +1,27 @@
 #!/bin/bash
 source ./install.source.sh
 
+
+function configure_docker_group() {
+  # Manage Docker as a non-root user
+  # https://docs.docker.com/install/linux/linux-postinstall/
+  # The docker daemon binds to a Unix socket instead of a TCP port.
+  # By default that Unix socket is owned by the user root and other
+  # users can only access it using sudo. The docker daemon always runs as the root user.
+  # If you don’t want to use sudo when you use the docker command, create a Unix group 
+  # called docker and add users to it. When the docker daemon starts, it makes 
+  # the ownership of the Unix socket read/writable by the docker group.
+  local -r user="${1:?[ERROR] user not provided}"
+  groupadd docker;
+  usermod -aG docker "${user}";
+  
+  #Log out and log back in so that your group membership is re-evaluated.
+  #If testing on a virtual machine, it may be necessary to restart the virtual machine for changes to take effect.
+  #On a desktop Linux environment such as X Windows, log out of your session completely and then log back in.
+}
+
 # https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
-function installdocker() {
+function install_docker() {
   # SET UP THE REPOSITORY
   apt-get update;
   apt-get -y install \
@@ -21,42 +40,11 @@ function installdocker() {
   apt-get -y install docker-ce;
 }
 
-function configuredockergroup() {
-  # Manage Docker as a non-root user
-  # https://docs.docker.com/install/linux/linux-postinstall/
-  # The docker daemon binds to a Unix socket instead of a TCP port.
-  # By default that Unix socket is owned by the user root and other
-  # users can only access it using sudo. The docker daemon always runs as the root user.
-  # If you don’t want to use sudo when you use the docker command, create a Unix group 
-  # called docker and add users to it. When the docker daemon starts, it makes 
-  # the ownership of the Unix socket read/writable by the docker group.
-  local -r user="${1:?[ERROR] user not provided}"
-  groupadd docker;
-  usermod -aG docker "${user}";
-}
-
-function configuredockerproxy() {  
-  if [ -z "${http_proxy}" ]; then
+function configure_docker_daemon_proxy() {  
+  local -r docker_proxy="${http_proxy}";  
+  if [ -z "${docker_proxy}" ]; then
     return 0;
   fi
-
-  # Configure docker containers to use a proxy server
-  # https://docs.docker.com/network/proxy/
-  local -r directory=~/.docker;
-  local -r file="${directory}/config.json";
-  
-  mkdir --mode=777 -p "${directory}";
-  echo '{' >> "${file}";
-  echo ' "proxies":' >> "${file}";
-  echo '  {' >> "${file}";
-  echo '   "default":' >> "${file}";
-  echo '    {' >> "${file}";
-  echo "     \"httpProxy\": \"${http_proxy}\"," >> "${file}";
-  echo "     \"noProxy\": \"${no_proxy}\"" >> "${file}";
-  echo '    }' >> "${file}";
-  echo '  }' >> "${file}";
-  echo '}' >> "${file}";
-  chmod 666 "${file}";
   
   # Configure Docker daemon to use a proxy server 
   # https://docs.docker.com/config/daemon/systemd/#httphttps-proxy
@@ -65,7 +53,7 @@ function configuredockerproxy() {
   
   mkdir -p "${daemon_config_directory}";
   echo "[Service]"  >> "${daemon_config_file}";
-  echo "Environment=\"HTTP_PROXY=${http_proxy}\"" >> "${daemon_config_file}";
+  echo "Environment=\"HTTP_PROXY=${docker_proxy}\"" >> "${daemon_config_file}";
     
   # Flush changes:
   systemctl daemon-reload
@@ -74,10 +62,55 @@ function configuredockerproxy() {
   systemctl restart docker
 }
 
+function configure_docker_containers_proxy() {
+  local -r user="${1:?[ERROR] user not provided}";
+  
+  local docker_proxy="${http_proxy}";
+  local docker_noproxy="${no_proxy}";
+
+  # if we use cntlm on docker-host then 'localhost' is contextual so we must determine docker ip  
+  local -r cntlm_conf="/etc/cntlm.conf";
+  if [ -f "${cntlm_conf}" ]; then
+    local ip=$(ifconfig | grep -A1 ^docker | grep 'inet addr' | grep -o -E 'inet addr:[0-9.]*' | cut -d : -f 2);
+    local port=3128;
+    ./configure-cntlm-listen-add "${ip}:${port}";
+    docker_proxy="http://${ip}:${port}";
+  fi
+  
+  if [ -z "${docker_proxy}" ]; then
+    return 0;
+  fi
+  
+  # Configure docker containers to use a proxy server
+  # https://docs.docker.com/network/proxy/
+  local -r directory="/home/${user}/.docker";
+  local -r file="${directory}/config.json";
+  
+  mkdir --mode=777 -p "${directory}";
+  echo '{' >> "${file}";
+  echo ' "proxies":' >> "${file}";
+  echo '  {' >> "${file}";
+  echo '   "default":' >> "${file}";
+  echo '    {' >> "${file}";
+  echo "     \"httpProxy\": \"${docker_proxy}\"," >> "${file}";
+  echo "     \"noProxy\": \"${docker_noproxy}\"" >> "${file}";
+  echo '    }' >> "${file}";
+  echo '  }' >> "${file}";
+  echo '}' >> "${file}";
+  
+  chown "$user":"$user" "${directory}" -R
+  chmod g+rwx "${directory}" -R
+}
+
+function configure_docker_proxy() {  
+  configure_docker_daemon_proxy "$@";
+  configure_docker_containers_proxy "$@";
+}
+
 function main() {
-  configuredockergroup "$@";
-  installdocker;
-  configuredockerproxy;
+  configure_docker_group "$@";
+  install_docker "$@";
+  configure_docker_proxy "$@";
 }
 
 main "$@";

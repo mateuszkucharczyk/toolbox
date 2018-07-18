@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ../bin/strings.sh
+
 function echoerr() { 
   echo "$@" 1>&2; 
 }

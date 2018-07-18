@@ -1,27 +1,26 @@
 #!/bin/bash
 
-function main() {
+./install.source.sh
+
+function configure_cntlm() {
   local -r url="${1:?[ERROR] url not provided (http://<username>:<password>@<proxy>:<port>)}";
   local -r domain="${2:?[ERROR] domain not provided}";
-  local no_proxy="${3:-}";
-  if [[ ! -z "${no_proxy// }" ]]; then
-    no_proxy=", ${no_proxy}";
+  local noproxy="${3:-}";
+  if [[ ! -z "${noproxy// }" ]]; then
+    noproxy=", ${noproxy}";
   fi
 
   local -r user=$(echo ${url} | cut -d '@' -f1 | cut -d ':' -f2 | cut -c 3-);
   local -r password=$(echo ${url} | cut -d '@' -f1 | cut -d ':' -f3);
   local -r proxy=$(echo ${url} | cut -d '@' -f2);
-
-  local hash;
-  hash=$(echo ${password} | cntlm -H -u${user} -d${domain} | grep PassNTLMv2);
   
-  rm /etc/cntlm.conf;  
-  echo "Username  ${user}" >> /etc/cntlm.conf;
-  echo "Domain    ${domain}" >> /etc/cntlm.conf;
+  mv -f /etc/cntlm.conf /etc/cntlm.conf.backup;
+  echo "Username  DUMMY" >> /etc/cntlm.conf;
+  echo "Domain    DUMMY" >> /etc/cntlm.conf;
   echo "Auth        NTLMv2" >> /etc/cntlm.conf; 
-  echo "${hash}" >> /etc/cntlm.conf;
+  echo "PassNTLMv2 DUMMY" >> /etc/cntlm.conf;
   echo "Proxy   ${proxy}" >> /etc/cntlm.conf;
-  echo 'NoProxy   localhost, 127.0.0.*, 10.*'"${no_proxy}" >> /etc/cntlm.conf;
+  echo 'NoProxy   localhost, 127.0.0.*, 10.*'"${noproxy}" >> /etc/cntlm.conf;
   echo "Listen    3128" >> /etc/cntlm.conf;
   echo "Gateway yes" >> /etc/cntlm.conf;
   echo "Allow       127.0.0.1" >> /etc/cntlm.conf;
@@ -31,7 +30,16 @@ function main() {
   echo "Allow       10.0.15.10" >> /etc/cntlm.conf;
   echo "Allow       192.168.56.1" >> /etc/cntlm.conf;
   echo "#Deny       0/0" >> /etc/cntlm.conf;
-  
+
+  ./configure-cntlm-password "${domain}" "${user}" "${password}"
+}
+
+
+function main() {
+  apt-get update && \
+  apt-get install -y cntlm && \
+  service cntlm start && \
+  configure_cntlm "$@" && \
   service cntlm restart;
 }
 
