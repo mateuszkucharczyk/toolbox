@@ -2,7 +2,7 @@
 source ./install.source.sh
 
 
-function configure_docker_group() {
+function enable_docker_managment_as_nonroot_user() {
   # Manage Docker as a non-root user
   # https://docs.docker.com/install/linux/linux-postinstall/
   # The docker daemon binds to a Unix socket instead of a TCP port.
@@ -52,6 +52,9 @@ function configure_docker_daemon_proxy() {
   local -r daemon_config_file="${daemon_config_directory}/http-proxy.conf";
   
   mkdir -p "${daemon_config_directory}";
+  if [ -f "${daemon_config_file}" ]; then
+    mv -f "${daemon_config_file}" "${daemon_config_file}.backup";
+  fi;
   echo "[Service]"  >> "${daemon_config_file}";
   echo "Environment=\"HTTP_PROXY=${docker_proxy}\"" >> "${daemon_config_file}";
     
@@ -68,6 +71,7 @@ function configure_docker_containers_proxy() {
   local docker_proxy="${http_proxy}";
   local docker_noproxy="${no_proxy}";
 
+  # https://danielksan81.wordpress.com/2015/05/22/configure-docker-to-use-a-proxy-inside-of-a-container/
   # if we use cntlm on docker-host then 'localhost' is contextual so we must determine docker ip  
   local -r cntlm_conf="/etc/cntlm.conf";
   if [ -f "${cntlm_conf}" ]; then
@@ -87,6 +91,10 @@ function configure_docker_containers_proxy() {
   local -r file="${directory}/config.json";
   
   mkdir --mode=777 -p "${directory}";
+  if [ -f "${file}" ]; then
+    mv -f "${file}" "${file}.backup";
+  fi;
+  
   echo '{' >> "${file}";
   echo ' "proxies":' >> "${file}";
   echo '  {' >> "${file}";
@@ -108,7 +116,7 @@ function configure_docker_proxy() {
 }
 
 function main() {
-  configure_docker_group "$@";
+  enable_docker_managment_as_nonroot_user "$@";
   install_docker "$@";
   configure_docker_proxy "$@";
 }
