@@ -40,6 +40,16 @@ function install_docker() {
   apt-get -y install docker-ce;
 }
 
+# https://docs.docker.com/compose/install/#install-compose
+function install_docker_compose() {
+  local -r release_url=$(final_url https://github.com/docker/compose/releases/latest)
+  local -r tag="${release_url##*/}";
+  local -r download_url="https://github.com/docker/compose/releases/download/${tag}/docker-compose-$(uname -s)-$(uname -m)";
+  
+  sudo curl -Ls "${download_url}" -o '/usr/local/bin/docker-compose'
+  chmod +x '/usr/local/bin/docker-compose'
+}
+
 function configure_docker_daemon_proxy() {  
   local -r docker_proxy="${http_proxy}";  
   if [ -z "${docker_proxy}" ]; then
@@ -101,6 +111,7 @@ function configure_docker_containers_proxy() {
   echo '   "default":' >> "${file}";
   echo '    {' >> "${file}";
   echo "     \"httpProxy\": \"${docker_proxy}\"," >> "${file}";
+  echo "     \"httpsProxy\": \"${docker_proxy}\"," >> "${file}";
   echo "     \"noProxy\": \"${docker_noproxy}\"" >> "${file}";
   echo '    }' >> "${file}";
   echo '  }' >> "${file}";
@@ -118,6 +129,7 @@ function configure_docker_proxy() {
 function main() {
   enable_docker_managment_as_nonroot_user "$@";
   install_docker "$@";
+  install_docker_compose "$@";
   configure_docker_proxy "$@";
 }
 

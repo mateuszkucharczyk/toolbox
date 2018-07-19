@@ -6,6 +6,16 @@ function echoerr() {
   echo "$@" 1>&2; 
 }
 
+#https://stackoverflow.com/a/5300429
+function final_url() {
+  local -r url="${1:?[ERROR] url not provided}"
+  curl -Ls -o /dev/null -w %{url_effective} "${url}";
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] final_url";
+    exit 1
+  fi
+}
+
 function requires() {
   for the_command in "$@"
   do
