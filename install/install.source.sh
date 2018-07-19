@@ -121,6 +121,11 @@ function install_from_archive() {
   echo "lalal"
 }
 
+function grant_permissions_to_executables() {
+  chmod -R 555 "$dst/"*.jar
+  chmod -R 555 "$dst/"*.sh
+}
+
 function  download() {
   local -r url="${1:?[ERROR] url not provided}"
   local -r name="${2:?[ERROR] name not provided}"
@@ -167,12 +172,6 @@ function  download() {
     fi  
   fi
   
-  # grant permissions to executables
-  echo "Granting permissions to executables..."
-  chmod -R 111 "$dst/*.jar"
-  chmod -R 111 "$dst/*.sh"
-  echo "done"
-
-  # create start script in bin
+  grant_permissions_to_executables
   create_start_script "${name}" "${executable}" 
 }
