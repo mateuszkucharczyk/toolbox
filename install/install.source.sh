@@ -4,6 +4,8 @@ source ../bin/strings.sh
 
 function echoerr() { 
   echo "$@" 1>&2; 
+  echo "  in function: ${FUNCNAME[1]}" 1>&2;
+  echo "    stacktrace: ${FUNCNAME[*]}" 1>&2;
 }
 
 #https://stackoverflow.com/a/5300429
