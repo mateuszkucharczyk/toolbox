@@ -82,12 +82,14 @@ function configure_docker_containers_proxy() {
   local docker_noproxy="${no_proxy}";
 
   # https://danielksan81.wordpress.com/2015/05/22/configure-docker-to-use-a-proxy-inside-of-a-container/
-  # if we use cntlm on docker-host then 'localhost' is contextual so we must determine docker ip  
+  # if we use cntlm on docker-host then 'localhost' is contextual so we must determine host's ip in docker bridge interface
+  # Contrary to what is written in above link we does not have to add 'Listen ${docker_interface_ip}' to /etc/cntlm.conf
+  # /etc/cntlm.conf is already configured to 'Listen    3128' which means 'Listen    0.0.0.0:3128 which means 'Listen    ALL_NET_INTERFACES:3128'
   local -r cntlm_conf="/etc/cntlm.conf";
   if [ -f "${cntlm_conf}" ]; then
     local ip=$(ifconfig | grep -A1 ^docker | grep 'inet addr' | grep -o -E 'inet addr:[0-9.]*' | cut -d : -f 2);
     local port=3128;
-    ./configure-cntlm-listen-add "${ip}:${port}";
+    #docker requires protocol to be specified
     docker_proxy="http://${ip}:${port}";
   fi
   

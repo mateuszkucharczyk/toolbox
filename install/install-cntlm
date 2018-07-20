@@ -14,8 +14,6 @@ function configure_cntlm() {
   local -r password=$(echo ${url} | cut -d '@' -f1 | cut -d ':' -f3);
   local -r proxy=$(echo ${url} | cut -d '@' -f2);
   
-  # use full ip 'Listen    127.0.0.1:3128' because port alone will not work if 
-  # there are multiple 'Listen' on the same port but different ip
   if [ -f '/etc/cntlm.conf' ]; then
     mv -f '/etc/cntlm.conf' '/etc/cntlm.conf.backup';
   fi
@@ -26,7 +24,7 @@ function configure_cntlm() {
   echo "PassNTLMv2 DUMMY" >> /etc/cntlm.conf;
   echo "Proxy   ${proxy}" >> /etc/cntlm.conf;
   echo 'NoProxy   localhost, 127.0.0.*, 10.*'"${noproxy}" >> /etc/cntlm.conf;
-  echo "Listen    127.0.0.1:3128" >> /etc/cntlm.conf;
+  echo "Listen    3128" >> /etc/cntlm.conf;
   echo "Gateway yes" >> /etc/cntlm.conf;
   echo "Allow       127.0.0.1" >> /etc/cntlm.conf;
   echo "Allow       10.158.3.90" >> /etc/cntlm.conf;
