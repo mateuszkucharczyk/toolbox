@@ -187,3 +187,19 @@ function  download() {
   grant_permissions_to_executables
   create_start_script "${name}" "${executable}" 
 }
+
+function download_from_maven_repository() {
+  local -r groupId="${1:?[ERROR] groupId not provided}";
+  local -r artifactId="${2:?[ERROR] artifactId not provided}";
+  local -r dst="${3:?[ERROR] destination directory not provided}";
+  
+  local -r latest_url=$(final_url "https://mvnrepository.com/artifact/${groupId}/${artifactId}/latest");
+  local -r versionId="${latest_url##*/}";
+
+  local -r filename="${artifactId}-${versionId}.jar";
+  local -r download_url='http://central.maven.org/maven2/'$(echo "${groupId}" | tr '.' '/')"/${artifactId}/${versionId}/${filename}"
+
+  local -r filepath="${dst}/${filename}";
+  wget -O "${filepath}" "${download_url}";
+  chmod 444 "${filepath}";
+}

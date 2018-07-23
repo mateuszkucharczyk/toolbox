@@ -8,7 +8,11 @@ function main {
   download "$url" "$name" "./squirrel-sql.sh"
 
   # install ingres jdbc driver
-  wget -O "$(get_install_dir)/$name/iijdbc-10.0-4.0.6.jar"  'http://central.maven.org/maven2/com/ingres/jdbc/iijdbc/10.0-4.0.6/iijdbc-10.0-4.0.6.jar'
+  local -r jdbc_path="$(get_install_dir)/${name}/jdbc";
+  mkdirorexit -p "${jdbc_path}";
+  download_from_maven_repository 'org.postgresql' 'postgresql' "${jdbc_path}";
+  download_from_maven_repository 'com.ingres.jdbc' 'iijdbc' "${jdbc_path}";
+  download_from_maven_repository 'mysql' 'mysql-connector-java' "${jdbc_path}";
 }
 
 main "$@"
