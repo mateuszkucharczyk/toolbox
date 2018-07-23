@@ -111,7 +111,7 @@ function wget_to_temp() {
   local -r url="${1:?[ERROR] url not provided}"
   local -r tmp=$(mktemp -d)
   
-  wget --trust-server-names -P "${tmp}" "${url}"
+  wget --trust-server-names -q -P "${tmp}" "${url}"
   if [[ "$?" -ne 0 ]]; then
     exit 1
   fi
@@ -200,6 +200,6 @@ function download_from_maven_repository() {
   local -r download_url='http://central.maven.org/maven2/'$(echo "${groupId}" | tr '.' '/')"/${artifactId}/${versionId}/${filename}"
 
   local -r filepath="${dst}/${filename}";
-  wget -O "${filepath}" "${download_url}";
+  wget -q -O "${filepath}" "${download_url}";
   chmod 444 "${filepath}";
 }
