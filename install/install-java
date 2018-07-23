@@ -2,7 +2,15 @@
 source ./install.source.sh
 
 function main() {
-  install_from_manager "oracle-java8-installer" "ppa:webupd8team/java";
+  local -r implementation="${1:-openjdk}"
+  if [ "${implementation}" == 'openjdk' ]; then
+    install_from_manager 'openjdk-8-jdk';
+  elif [ "${implementation}" == 'oracle' ]; then
+    install_from_manager "oracle-java8-installer" "ppa:webupd8team/java";
+  else
+    echoerr "[ERROR] Unknown jdk implementation: >${implementation}<";
+    exit 1;
+  fi
 }
 
 main "$@"
