@@ -204,3 +204,12 @@ function download_from_maven_repository() {
   wget -q -O "${filepath}" "${download_url}";
   chmod 444 "${filepath}";
 }
+
+function install_autocompletion() {
+  #https://serverfault.com/a/506707
+  #https://github.com/scop/bash-completion/blob/master/README.md
+  local -r url="${1:? url not provided}";
+  local -r pathname="$(pkg-config --variable=completionsdir bash-completion)/${url##*/}";
+  curl -L "${url}" -o "${pathname}";
+  chmod 555 "${pathname}"
+}

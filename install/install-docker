@@ -132,6 +132,7 @@ function main() {
   enable_docker_managment_as_nonroot_user "$@";
   install_docker "$@";
   install_docker_compose "$@";
+  install_autocompletion 'https://raw.githubusercontent.com/docker/compose/1.21.2/contrib/completion/bash/docker-compose'
   configure_docker_proxy "$@";
 }
 
