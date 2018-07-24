@@ -26,6 +26,7 @@ function install_git_core() {
 function main() {
   install_git_core "$@";
   install_git_lfs "$@";
+  apt-get install -y git bash-completion
 }
 
 main "$@"
