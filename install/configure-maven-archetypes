@@ -6,11 +6,20 @@ function main() {
 
    local -r user="${1:?[ERROR] user not provided}";
    local -r projects="/home/${user}/projects";
+
    mkdirorexit -p "${projects}";
    cdorexit "${projects}";
-   git clone "https://github.com/mateuszkucharczyk/archetypes.git";
-   cdorexit "archetypes";
+   if [ -d "${projects}/archetypes" ]; then
+     cdorexit "archetypes";
+     git pull;
+   else
+     git clone "https://github.com/mateuszkucharczyk/archetypes.git";
+     cdorexit "archetypes";
+   fi
+
    mvn 'clean' 'install';
+
+   echo 'PATH="$HOME/projects/archetypes/bin:$PATH"' >> "/home/${user}/.profile"
 }
 
 main "$@"
