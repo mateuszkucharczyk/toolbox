@@ -2,31 +2,22 @@
 source ./install.source.sh
 
 function main() {
-  # local -r extension=".tar.gz"
-  local -r extension=".sh";
-  
   local -r base_url="https://s3.amazonaws.com/downloads.eviware"
   local xml;
   xml=$(wget -q -O - "${base_url}?list-type=2&prefix=soapuios");
   if [[ "$?" -ne 0 ]]; then
-    echo "[ERROR] Unable to query link to latest soapui version." >&2;
+    echoerr "[ERROR] Unable to query link to latest soapui version.";
     exit 1;
   fi
 
   local relative_url;
   relative_url=$(xmllint --xpath "(//*[local-name()='Key' and starts-with(text(), 'soapuios') and contains(text(),'linux') and contains(text(), '.tar.gz')])[last()]/text()" - <<< "${xml}");
   if [[ "$?" -ne 0 ]]; then
-    echo "[ERROR] Unable to parse link to latest soapui version." >&2;
+    echoerr "[ERROR] Unable to parse link to latest soapui version.";
     exit 1;
   fi
 
   local -r url="${base_url}/${relative_url}";
-  echo "${url}";
-  #$(wget "${url}");
-  #if [[ "$?" -ne 0 ]]; then
-  #  echo "[ERROR] Unable to download soapui (${url})" >&2;
-  #  exit 1;
-  #fi
   download "${url}" "soapui" "bin/soapui.sh";
 }
 
