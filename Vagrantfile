@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
 
   # escape '\'
   # http://<username>:<password>@<proxy>:<port>
-  config.vm.provision "shell", path: "#{script}", args: ["#{ENV['http_proxy']}", "#{ENV['USERDOMAIN']}"]
+  config.vm.provision "shell", path: "#{script}", args: ["#{ENV['http_proxy']}", "#{ENV['USERDOMAIN']}", "#{ENV['noproxy']}"]
   
   
   # Disable automatic box update checking. If you disable this, then
