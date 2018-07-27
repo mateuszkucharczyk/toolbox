@@ -1,11 +1,13 @@
 #!/bin/bash
 
 source ./install.source.sh
+source ../bin/strings.sh
 
 function main() {
-  local -r url="https://www.xmind.net/xmind/downloads/xmind-8-update2-linux.zip"
-  local -r name="xmind"
-  
+  local -r user="${1:?[ERROR] user not provided}";
+  local -r name="xmind";
+  local -r url='https://www.xmind.net/download/linux/';
+  local -r xpath='string(//div[@class="download-btn"]//@href)';
   
   # ======== http://www.xmind.net/m/PuDC ======== 
   # 1 Prepare files
@@ -14,22 +16,51 @@ function main() {
   #   2.1 unzip xmind-8-linux.zip -d xmind
   # 3 Move to /opt/
   #   3.1 sudo mv xmind /opt/
-  if ! download "${url}" "${name}"  "./bin/xmind.sh" --create-dir ; then
-    echo "Failed to download and unpack <${url}> to $(get_install_dir)/name" >&2
-    exit 1
+  local -r href=$(find_by_xpath "${url}" "${xpath}");
+  if ! download "${href}" "${name}"  "XMind_amd64/XMind" --create-dir ; then
+   echoerr "[ERROR] Failed to download and unpack <${url}> to $(get_install_dir)/${name}";
+   exit 1
   fi
 
+  #TODO
+  ##4 Prepare directories
+  ## 4.1 Allow writes to configuration directory
+  chmod a+w "$(get_install_dir)/${name}/XMind_amd64/configuration"
   
-  #4 Prepare directories
-  # 4.1 Allow writes to configuration directory
-  chmod a+w "$(get_install_dir)/${name}/configuration"
   #5 Edit configuration file /opt/xmind/XMind_amd64/XMind.ini
-  # 5.1 Line2 change: ./configuration
-  #   5.1.1 /opt/xmind/Xmind_amd64/configuration
-  # 5.2 Line 4 change: ../workspace
-  #   5.2.1 /home/USERNAME/workspace
-  # 5.3 Line 6 & 8 change: ../plugins
-  #   5.3.1 ../plugins
+  local -r ini_file="$(get_install_dir)/${name}/XMind_amd64/XMind.ini";
+  cp "${ini_file}" "${ini_file}.backup";
+  
+  ## 5.1 Line2 change: ./configuration
+  ##   5.1.1 /opt/xmind/Xmind_amd64/configuration
+  #replace_first_matching_line '[.]/configuration' "$(get_install_dir)/${name}/XMind_amd64/configuration" "${ini_file}";
+  #
+  ## 5.2 Line 4 change: ../workspace
+  ##   5.2.1 /home/USERNAME/workspace
+  #replace_first_matching_line '[.][.]/workspace' "/home/${user}/projects" "${ini_file}";
+  #
+  ## 5.3 Line 6 & 8 change: ../plugins
+  ##   5.3.1 ../plugins
+  #
+  #local -r setup="$(get_install_dir)/${name}/setup.sh";
+  #$(${setup});
+  
+  echo '-configuration
+'$(get_install_dir)/${name}'/XMind_amd64/configuration
+-data
+/home/'${user}'/projects
+-startup
+'$(get_install_dir)/${name}'/plugins/org.eclipse.equinox.launcher_1.3.200.v20160318-1642.jar
+--launcher.library
+'$(get_install_dir)/${name}'/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.1.400.v20160518-1444
+--launcher.defaultAction
+openFile
+--launcher.GTK_version
+2
+-eclipse.keyring
+@user.home/.xmind/secure_storage_linux
+-vmargs
+-Dfile.encoding=UTF-8' > "${ini_file}";
 }
 
 main "$@"

@@ -2,6 +2,24 @@
 
 source ../bin/strings.sh
 
+#quiet pushd/popd
+#https://stackoverflow.com/a/25288289
+function pushd () {
+  command pushd "$@" > /dev/null;
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] pushd" "$@";
+    exit 1
+  fi
+}
+
+function popd () {
+  command popd "$@" > /dev/null;
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] popd" "$@";
+    exit 1
+  fi
+}
+
 function echoerr() { 
   echo "$@" 1>&2; 
   echo "  in function: ${FUNCNAME[1]}" 1>&2;
@@ -55,7 +73,7 @@ function get_bin_dir() {
 function mkdirorexit() {
   mkdir "$@";
   if [[ "$?" -ne 0 ]]; then
-    echoerr "[ERROR] cannot 'mkdir ${$@}'. Aborting."; 
+    echoerr "[ERROR] cannot 'mkdir $@'. Aborting."; 
     exit 1
   fi
 }
@@ -63,7 +81,7 @@ function mkdirorexit() {
 function mvorexit() {
   mv "$@";
   if [[ "$?" -ne 0 ]]; then
-    echoerr "[ERROR] cannot 'mv ${$@}'. Aborting."; 
+    echoerr "[ERROR] cannot 'mv $@'. Aborting."; 
     exit 1
   fi
 }
@@ -71,7 +89,7 @@ function mvorexit() {
 function cdorexit() {
   cd "$@";
   if [[ "$?" -ne 0 ]]; then
-    echoerr "[ERROR] cannot 'cd ${$@}'. Aborting."; 
+    echoerr "[ERROR] cannot 'cd $@'. Aborting."; 
     exit 1
   fi
 }
@@ -112,13 +130,15 @@ function wget_to_temp() {
   local -r url="${1:?[ERROR] url not provided}"
   local -r tmp=$(mktemp -d)
   
-  wget --trust-server-names -q -P "${tmp}" "${url}"
+  pushd "${tmp}";
+  curl -Ls -O "${url}";
   if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] cannot download >${url}<";
     exit 1
   fi
-  local archname
-  archname=$(ls ${tmp})
+  local archname=$(ls ${tmp})
   echo "${tmp}/${archname:?[ERROR] Cannot determine archive name}"
+  popd;
 }
 
 function create_start_script() {
@@ -130,13 +150,10 @@ function create_start_script() {
   chmod 555 "$(get_bin_dir)/${name}"
 }
 
-function install_from_archive() {
-  echo "lalal"
-}
-
 function grant_permissions_to_executables() {
-  chmod -R 555 "$dst/"*.jar
-  chmod -R 555 "$dst/"*.sh
+  local -r dst="${1?:[ERROR] dst not provided}"
+  chmod -R -f 555 "${dst}/"*.jar
+  chmod -R -f 555 "${dst}/"*.sh
 }
 
 function  download() {
@@ -144,49 +161,53 @@ function  download() {
   local -r name="${2:?[ERROR] name not provided}"
   local -r executable="${3:?[ERROR] executable not provided}"
   
-  if [[ "$@" == *--create-dir* ]]; then
-    local -r install_dir="$(get_install_dir)/${name}"
-    if ! mkdir "${install_dir}" ; then
-      echo "[ERROR] Failed to create installation directory: ${install_dir}" >&2
-      exit 1
-    fi
-  else
-    local -r install_dir="$(get_install_dir)"
-  fi
+  local -r install_dir="$(get_install_dir)/${name}";
   
   # remove old installation if any
-  remove_old_installation "$install_dir/$name"
+  remove_old_installation "${install_dir}"
 
   
   # download and install
   local archfile
   archfile=$(wget_to_temp "${url}")
-  echo "<${archfile}>"
   if [[ "$?" -ne 0 ]]; then
-    echo "Unable to downlad ${url}" >&2
+    echoerr "[ERROR] Unable to downlad ${url}";
     exit 1
   fi
   
-  if ! unpack_by_extension "${archfile}" "${install_dir}" ; then
-    echo "[ERROR] Failed to unpack <${archfile}> to <${install_dir}>" >&2
-    exit 1
+  local -r tmpdir="${archfile%/*}";
+  if [[ "$@" == *--create-dir* ]]; then
+    local -r unpackdir="${tmpdir}/unpack_here/${name}";
+  else
+    local -r unpackdir="${tmpdir}/unpack_here";
   fi
+  mkdirorexit -p "${unpackdir}";
 
-  #rename
-  local src;
-  local dst;
-  src=$(ls -d $install_dir/* | grep -i $name)
-  dst=$(dirname "${src}")/$name
-  
-  if [[ ! "${src}" -ef "${dst}" ]]; then
-    if ! mv "${src}" "${dst}" ; then
-      echo "[ERROR] Failed to rename <${src}> to <${dst}>" >&2
-      exit 1
-    fi  
+  if ! unpack_by_extension "${archfile}" "${unpackdir}" ; then
+    echoerr "[ERROR] Failed to unpack '${archfile}' to '${unpackdir}'";
+    exit 1;
   fi
   
-  grant_permissions_to_executables
-  create_start_script "${name}" "${executable}" 
+  # move
+  local -r appdir=$(ls ${tmpdir}/unpack_here)
+  local -r apppath="${tmpdir}/unpack_here/${appdir}"
+  mvorexit "${apppath}" "${install_dir}/";
+
+  grant_permissions_to_executables "${install_dir}/";
+  chmod 555 "${install_dir}/${executable}";
+  create_start_script "${name}" "${executable}";
+}
+
+function find_by_xpath() {
+  local -r url="${1:?[ERROR] url not provided}";
+  local -r xpath="${2:?[ERROR] xpath not provided}";
+  local href;
+  href=$(wget -q -O - "${url}" | xmllint --html --xpath "${xpath}" - 2>/dev/null);
+  if [[ "$?" -ne 0 ]]; then
+    echoerr "[ERROR] cannot find href by xpath '${xpath}' on '${url}'"; 
+    exit 1;
+  fi
+  echo "${href}";
 }
 
 function download_from_maven_repository() {
