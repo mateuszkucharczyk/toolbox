@@ -1,11 +1,17 @@
 #!/bin/bash
 
+#https://docs.xfce.org/xfce/xfconf/xfconf-query
 function main() {
+  # usefull oneliner to list all properties: 
+  # xfconf-query --list | grep -e '^  ' | cut -c 3- | xargs -d '\n' -I % xfconf-query -c % --list -v
+
   #disable window move ALT+left mouse button
   xfconf-query -c xfwm4 -p "/general/easy_click" -s none;
   
-  # set keyboard-layout=polish-programmer
-  xfconf-query -c keyboard-layout -p '/Default/XkbVariant' -s 'legacy'
+  #set keyboard-layout=polish-programmer
+  xfconf-query -c keyboard-layout -p '/Default/XkbDisable' -n -t bool -s  'false'
+  xfconf-query -c keyboard-layout -p '/Default/XkbLayout'  -n -t string -s  'pl'
+  xfconf-query -c keyboard-layout -p '/Default/XkbVariant' -n -t string -s  'legacy'
   
   #disable shortcuts in conflict with IntellJIdea
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Alt>Insert" -r;
