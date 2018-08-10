@@ -37,9 +37,9 @@ Vagrant.configure("2") do |config|
   vb.gui = gui
   
   # Customize the resources on the VM:
-  vb.memory = 10240
-  vb.cpus = 2
-  vb.customize ["modifyvm", :id, "--vram", "64"]
+  vb.memory = 20480
+  vb.cpus = 3
+  vb.customize ["modifyvm", :id, "--vram", "128"]
   # disable 2D acceleration - it works only for Windows guest
   vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]
   # disable 3D acceleration - IntellJ Toolbox does not display when turned on
