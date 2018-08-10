@@ -45,7 +45,12 @@ Vagrant.configure("2") do |config|
   # disable 3D acceleration - IntellJ Toolbox does not display when turned on
   vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
   
+  # enable clipboard
   vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+  
+  # enable audio
+  vb.customize ["modifyvm", :id, "--audioout", "on"]
+  vb.customize ["modifyvm", :id, "--audioin", "on"]
   
   # disable usb
   vb.customize ["modifyvm", :id, "--usb", "off"]
