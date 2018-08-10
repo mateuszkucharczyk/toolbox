@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
   
   # Customize the resources on the VM:
   vb.memory = 20480
-  vb.cpus = 3
+  vb.cpus = 2
   vb.customize ["modifyvm", :id, "--vram", "128"]
   # disable 2D acceleration - it works only for Windows guest
   vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]
