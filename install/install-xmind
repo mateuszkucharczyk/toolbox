@@ -48,7 +48,7 @@ function main() {
   echo '-configuration
 '$(get_install_dir)/${name}'/XMind_amd64/configuration
 -data
-/home/'${user}'/projects
+/home/'${user}'/projects/mindmaps
 -startup
 '$(get_install_dir)/${name}'/plugins/org.eclipse.equinox.launcher_1.3.200.v20160318-1642.jar
 --launcher.library
