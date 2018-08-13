@@ -20,6 +20,34 @@ function main() {
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Right" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Up" -r;
   xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>Down" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F1" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F2" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F3" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F4" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F5" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F6" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F7" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F8" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F9" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F10" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F11" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary>F12" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F1" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F2" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F3" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F4" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F5" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F6" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F7" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F8" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F9" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F10" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F11" -r;
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Alt>F12" -r;
+
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>F1" -n -t string -s "xfce4-popup-applicationsmenu";
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>F2" -n -t string -s "xfrun4";
+  xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>F3" -n -t string -s "xfce4-appfinder";
   
   #make lock-screen shortcuts the same as in Windows (will lock both host and guest)
   xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>l" -r;
