@@ -1,23 +1,31 @@
-#! /bin/bash
+#!/bin/bash
 
 source ./install.source.sh
 
-function main {
+
+function query_url_of_squirrel_latest_version() {
   local -r files_url='https://sourceforge.net/projects/squirrel-sql/files/1-stable';
   local -r folder_xpath="string(//table[@id='files_list']/tbody//th[@scope='row']//@href[contains(., '-plainzip')])";
   local -r folder_url='https://sourceforge.net/'$(wget -q -O - "${files_url}" | xmllint --html --xpath "${folder_xpath}" - 2>/dev/null);
   local -r file_xpath="string(//table[@id='files_list']/tbody//th[@scope='row']//@href[contains(., '-optional')])";
   local -r file_url=$(wget -q -O - "${folder_url}" | xmllint --html --xpath "${file_xpath}" - 2>/dev/null);
+  echo "${file_url%/download}";
+}
 
-  local -r name="squirrelsql"
-  download "${file_url}" "${name}" "./squirrel-sql.sh"
-
-  # install ingres jdbc driver
-  local -r jdbc_path="$(get_install_dir)/${name}/jdbc";
+function install_ingres_jdbc_drivers() {
+  local -r jdbc_path="${1?:[ERROR] jdbc path not provided}";
   mkdirorexit -p "${jdbc_path}";
   download_from_maven_repository 'org.postgresql' 'postgresql' "${jdbc_path}";
   download_from_maven_repository 'com.ingres.jdbc' 'iijdbc' "${jdbc_path}";
   download_from_maven_repository 'mysql' 'mysql-connector-java' "${jdbc_path}";
+}
+
+function main() {
+  local -r file_url=$(query_url_of_squirrel_latest_version);
+  local -r name="squirrelsql";
+
+  download "${file_url}" "${name}" "./squirrel-sql.sh";
+  install_ingres_jdbc_drivers "$(get_install_dir)/${name}/jdbc"
 }
 
 main "$@"
