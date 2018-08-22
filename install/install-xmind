@@ -3,12 +3,17 @@
 source ./install.source.sh
 source ../bin/strings.sh
 
+function query_url_of_xmind_latest_version() {
+  #local -r url='https://www.xmind.net/download/xmind8';
+  #local -r xpath='string(//div[@class="zen-download__link"]//@href)';
+  #local -r href=$(find_by_xpath $url "$xpath");
+  echo "https://www.xmind.net/xmind/downloads/xmind-8-update8-linux.zip";
+}
+
 function main() {
   local -r user="${1:?[ERROR] user not provided}";
   local -r name="xmind";
-  local -r url='https://www.xmind.net/download/linux/';
-  local -r xpath='string(//div[@class="download-btn"]//@href)';
-  
+
   # ======== http://www.xmind.net/m/PuDC ======== 
   # 1 Prepare files
   #   1.1 Download from http://www.xmind.net/download/linux/
@@ -16,7 +21,7 @@ function main() {
   #   2.1 unzip xmind-8-linux.zip -d xmind
   # 3 Move to /opt/
   #   3.1 sudo mv xmind /opt/
-  local -r href=$(find_by_xpath "${url}" "${xpath}");
+  local -r href=$(query_url_of_xmind_latest_version)
   if ! download "${href}" "${name}"  "XMind_amd64/XMind" --create-dir ; then
    echoerr "[ERROR] Failed to download and unpack <${url}> to $(get_install_dir)/${name}";
    exit 1

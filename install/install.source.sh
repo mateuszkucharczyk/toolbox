@@ -131,7 +131,8 @@ function wget_to_temp() {
   local -r tmp=$(mktemp -d)
   
   pushd "${tmp}";
-  curl -Ls -O "${url}";
+  # https://stackoverflow.com/a/7451779
+  curl -Ls -O -J "${url}";
   if [[ "$?" -ne 0 ]]; then
     echoerr "[ERROR] cannot download >${url}<";
     exit 1
@@ -203,6 +204,7 @@ function find_by_xpath() {
   local -r xpath="${2:?[ERROR] xpath not provided}";
   local href;
   href=$(wget -q -O - "${url}" | xmllint --html --xpath "${xpath}" - 2>/dev/null);
+#|| -z "$href"
   if [[ "$?" -ne 0 ]]; then
     echoerr "[ERROR] cannot find href by xpath '${xpath}' on '${url}'"; 
     exit 1;
