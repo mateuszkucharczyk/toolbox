@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source ./install.source.sh
+
+function main() { 
+  install_from_manager tasksel && tasksel install xubuntu-core
+  
+  # fixme: applied to root user instead vagrant user
+  #./configure-xfce 
+}
+
+main "$@"

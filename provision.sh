@@ -1,15 +1,13 @@
 #!/bin/bash
 
-function main() { 
-  printenv | grep proxy
+function main() {   
+  local -r user='vagrant';
   
   pushd /vagrant/install
   ./configure-apt
-  
-  
-  # fixme: applied to root user instead vagrant user
-  #./configure-xfce 
-  
+
+  ./install-xfce
+  ./install-guest-additions "${user}"
   ./install-packet-installation-tools 
   ./install-git
   ../setupstream "https://github.com/mateuszkucharczyk/toolbox.git" "/vagrant"

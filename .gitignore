@@ -6,3 +6,4 @@ stderr
 stderr-*
 *.crt
 *.cer
+*.log

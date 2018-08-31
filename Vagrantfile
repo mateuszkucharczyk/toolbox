@@ -27,11 +27,15 @@ Vagrant.configure("2") do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  ### Plugins Configuration
   #disable vagrant-proxyconf plugin
   #config.proxy.enabled = false
   
-  config.vm.box = "bstoots/xubuntu-16.04-desktop-amd64"
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.box_version = "20180830.0.0"
+  
   config.vm.synced_folder "../projects/", "/home/vagrant/projects"
+  config.vm.synced_folder "../Documents/", "/home/vagrant/Documents"
 
   config.vm.provider "virtualbox" do |vb|
   vb.gui = gui
@@ -42,8 +46,8 @@ Vagrant.configure("2") do |config|
   vb.customize ["modifyvm", :id, "--vram", "128"]
   # disable 2D acceleration - it works only for Windows guest
   vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]
-  # disable 3D acceleration - IntellJ Toolbox does not display when turned on
-  vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+  # WARNING: 3D acceleration may cause IntellJ Toolbox to not display on some distributions
+  vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
   
   # enable clipboard
   vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
