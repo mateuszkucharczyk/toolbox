@@ -3,7 +3,10 @@
 source ./install.source.sh
 
 function main() { 
-  install_from_manager tasksel && tasksel install xubuntu-core
+  # https://linuxconfig.org/install-gui-on-ubuntu-server-18-04-bionic-beaver#h7-3-xubuntu-server-core-desktop
+  # https://askubuntu.com/a/1053591
+  install_from_manager tasksel && \
+  apt-get install -y xubuntu-core^
   
   # fixme: applied to root user instead vagrant user
   #./configure-xfce 
