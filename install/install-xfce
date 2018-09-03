@@ -1,5 +1,4 @@
 #!/bin/bash
-
 source ./install.source.sh
 
 function main() { 
@@ -7,9 +6,8 @@ function main() {
   # https://askubuntu.com/a/1053591
   install_from_manager tasksel && \
   apt-get install -y xubuntu-core^
-  
-  # fixme: applied to root user instead vagrant user
-  #./configure-xfce 
+  # configure-xfce is always applied to current user so we must postpone it 
+  ./configure-boot-run-script-once ./configure-xfce
 }
 
 main "$@"

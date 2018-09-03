@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function main() {
+  local -r target_script="${1:?[ERROR] script not provided}"
+  
+  local -r target_pathname=$(readlink -f "${target_script}")
+  local -r target_filename=${target_pathname##*/}
+  local -r boot_pathname="/etc/profile.d/${target_filename%.*}.sh"
+
+  local -r run_and_remove="#!/bin/bash 
+  ${target_pathname} && sudo rm ${boot_pathname}
+  "
+  echo "${run_and_remove}" > "${boot_pathname}"
+  chmod 777 "${boot_pathname}"
+}
+
+main "$@"
