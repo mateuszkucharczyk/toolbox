@@ -1,0 +1,89 @@
+#!/bin/bash
+source ./install.source.sh
+
+function install_oh_my_zsh() {
+  # Use colors, but only if connected to a terminal, and that terminal
+  # supports them.
+  if which tput >/dev/null 2>&1; then
+      ncolors=$(tput colors)
+  fi
+  if [ -t 1 ] && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+    YELLOW="$(tput setaf 3)"
+    BLUE="$(tput setaf 4)"
+    BOLD="$(tput bold)"
+    NORMAL="$(tput sgr0)"
+  else
+    RED=""
+    GREEN=""
+    YELLOW=""
+    BLUE=""
+    BOLD=""
+    NORMAL=""
+  fi
+  
+  
+  # Only enable exit-on-error after the non-critical colorization stuff,
+  # which may fail on systems lacking tput or terminfo
+  set -e
+
+  if ! command -v zsh >/dev/null 2>&1; then
+    printf "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!\n"
+    exit
+  fi
+
+  if [ ! -n "$ZSH" ]; then
+    ZSH=~/.oh-my-zsh
+  fi
+
+  if [ -d "$ZSH" ]; then
+    printf "${YELLOW}You already have Oh My Zsh installed.${NORMAL}\n"
+    printf "You'll need to remove $ZSH if you want to re-install.\n"
+    exit
+  fi
+  
+  umask g-w,o-w
+
+  printf "${BLUE}Cloning Oh My Zsh...${NORMAL}\n"
+  command -v git >/dev/null 2>&1 || {
+    echo "Error: git is not installed"
+    exit 1
+  }
+  
+  env git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git "$ZSH" || {
+    printf "Error: git clone of oh-my-zsh repo failed\n"
+    exit 1
+  }
+  
+  printf "${BLUE}Looking for an existing zsh config...${NORMAL}\n"
+  if [ -f ~/.zshrc ] || [ -h ~/.zshrc ]; then
+    printf "${YELLOW}Found ~/.zshrc.${NORMAL} ${GREEN}Backing up to ~/.zshrc.pre-oh-my-zsh${NORMAL}\n";
+    mv ~/.zshrc ~/.zshrc.pre-oh-my-zsh;
+  fi
+  
+  printf "${BLUE}Using the Oh My Zsh template file and adding it to ~/.zshrc${NORMAL}\n"
+  cp "$ZSH"/templates/zshrc.zsh-template ~/.zshrc
+  sed "/^export ZSH=/ c\\
+  export ZSH=\"$ZSH\"
+  " ~/.zshrc > ~/.zshrc-omztemp
+  mv -f ~/.zshrc-omztemp ~/.zshrc
+}
+
+function configure_oh_my_zsh() {
+  local -r user="${1:?[ERROR] user not provided}";
+  local -r config="/home/${user}/.zshrc";
+  replace_first_matching_line 'ZSH_THEME=.*' 'ZSH_THEME="agnoster"' "${config}";
+  chsh -s "$(which zsh)" "${user}";
+}
+
+function main() { 
+  local -r user="${1:?[ERROR] user not provided}"
+  
+  apt-get install -y zsh
+  install_oh_my_zsh
+  apt-get install -y fonts-powerline
+  configure_oh_my_zsh "${user}";
+}
+
+main "$@"
