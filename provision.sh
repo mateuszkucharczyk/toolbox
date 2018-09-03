@@ -11,6 +11,7 @@ function main() {
   ./install-packet-installation-tools 
   ./install-git
   ../setupstream "https://github.com/mateuszkucharczyk/toolbox.git" "/vagrant"
+  ./install-terminal "${user}"
   #./install-packet-dev "${user}"
   popd;
 }

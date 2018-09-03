@@ -2,6 +2,8 @@
 source ./install.source.sh
 
 function install_oh_my_zsh() {
+  local -r user="${1:?[ERROR] user not provided}";
+
   # Use colors, but only if connected to a terminal, and that terminal
   # supports them.
   if which tput >/dev/null 2>&1; then
@@ -34,7 +36,7 @@ function install_oh_my_zsh() {
   fi
 
   if [ ! -n "$ZSH" ]; then
-    ZSH=~/.oh-my-zsh
+    ZSH="/home/${user}/.oh-my-zsh"
   fi
 
   if [ -d "$ZSH" ]; then
@@ -56,23 +58,25 @@ function install_oh_my_zsh() {
     exit 1
   }
   
+  local -r zshrc="/home/${user}/.zshrc"
   printf "${BLUE}Looking for an existing zsh config...${NORMAL}\n"
-  if [ -f ~/.zshrc ] || [ -h ~/.zshrc ]; then
-    printf "${YELLOW}Found ~/.zshrc.${NORMAL} ${GREEN}Backing up to ~/.zshrc.pre-oh-my-zsh${NORMAL}\n";
-    mv ~/.zshrc ~/.zshrc.pre-oh-my-zsh;
+  if [ -f "${zshrc}" ] || [ -h "${zshrc}" ]; then
+    printf "${YELLOW}Found ${zshrc}.${NORMAL} ${GREEN}Backing up to ${zshrc}.backup${NORMAL}\n";
+    mv "${zshrc}" "${zshrc}.backup"
   fi
   
-  printf "${BLUE}Using the Oh My Zsh template file and adding it to ~/.zshrc${NORMAL}\n"
-  cp "$ZSH"/templates/zshrc.zsh-template ~/.zshrc
+  printf "${BLUE}Using the Oh My Zsh template file and adding it to ${zshrc}${NORMAL}\n"
+  cp "$ZSH"/templates/zshrc.zsh-template "${zshrc}"
   sed "/^export ZSH=/ c\\
   export ZSH=\"$ZSH\"
-  " ~/.zshrc > ~/.zshrc-omztemp
-  mv -f ~/.zshrc-omztemp ~/.zshrc
+  " "${zshrc}" > "${zshrc}-omztemp"
+  mv -f "${zshrc}-omztemp" "${zshrc}"
 }
 
 function configure_oh_my_zsh() {
   local -r user="${1:?[ERROR] user not provided}";
   local -r config="/home/${user}/.zshrc";
+  
   replace_first_matching_line 'ZSH_THEME=.*' 'ZSH_THEME="agnoster"' "${config}";
   chsh -s "$(which zsh)" "${user}";
 }
@@ -81,7 +85,7 @@ function main() {
   local -r user="${1:?[ERROR] user not provided}"
   
   apt-get install -y zsh
-  install_oh_my_zsh
+  install_oh_my_zsh "${user}";
   apt-get install -y fonts-powerline
   configure_oh_my_zsh "${user}";
 }
