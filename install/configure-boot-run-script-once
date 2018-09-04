@@ -3,7 +3,7 @@
 function main() {
   local -r target_script="${1:?[ERROR] script not provided}"
   
-  local -r target_pathname=$(readlink -f "${target_script}")
+  local -r target_pathname=$(readlink -f $(which ${target_script}))
   local -r target_filename=${target_pathname##*/}
   local -r boot_pathname="/etc/profile.d/${target_filename%.*}.sh"
 

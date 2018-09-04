@@ -11,12 +11,12 @@ function main() {
   ./install-intellij
   ./install-docker "${user}"
   
-  ./install-nodejs
+  # ./install-nodejs
 
   ./install-shellcheck
   
   ./install-git
-  ./install-svn
+  # ./install-svn
   
   ./install-squirrelsql
   ./install-soapui
