@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function main () {
+  local -r user="${1:?[ERROR] user not provided}"
+
+  apt-get install -y linux-tools-virtual linux-cloud-tools-virtual xrdp
+  echo xfce4-session >"${user}/.xsession"
+  service xrdp restart
+}
+
+main "$@"
