@@ -1,6 +1,5 @@
 #!/bin/bash
-
-./install.source.sh
+source ./install.source.sh
 
 function configure_cntlm() {
   local -r url="${1:?[ERROR] url not provided (http://<username>:<password>@<proxy>:<port>)}";

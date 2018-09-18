@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
   #disable vagrant-proxyconf plugin
   #config.proxy.enabled = false
   
-  config.vm.box = "generic/ubuntu1810"
+  config.vm.box = "bento/ubuntu-18.04"
   config.vm.box_check_update = false
   
   config.vm.network "forwarded_port", guest: 3389, host: 8001
@@ -40,7 +40,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "../Documents/", "/home/vagrant/Documents"
 
   config.vm.provider "hyperv" do |hv|
-    hv.gui = gui
     hv.maxmemory = 20480
     hv.cpus = 2
     hv.linked_clone = true

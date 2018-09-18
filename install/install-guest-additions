@@ -1,10 +1,11 @@
 #!/bin/bash
+source ./install.source.sh
 
 function main() {
 	local -r user="${1:?[ERROR] user not provided}"
 
 	apt-get update
-	sudo apt-get upgrade -y
+	apt-get upgrade -y
 	apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils
 	
 	# virtualbox-guest-x11 required to make shared clipboard work properly

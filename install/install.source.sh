@@ -102,6 +102,14 @@ function remove_old_installation() {
   fi
 }
 
+function apt-get() {
+   DEBIAN_FRONTEND=noninteractive command apt-get "$@"
+}
+
+function apt() {
+  DEBIAN_FRONTEND=noninteractive command apt "$@"
+}
+
 function install_from_manager() {
   if [[ -n "${2}" ]]; then
     local -r repository="${2}"
